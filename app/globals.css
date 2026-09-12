@@ -1,26 +1,100 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --radius: 1rem;
+
+  --background: oklch(0.985 0.003 250);
+  --foreground: oklch(0.22 0.03 265);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.22 0.03 265);
+  --border: oklch(0.9 0.01 260);
+  --muted: oklch(0.95 0.01 260);
+  --muted-foreground: oklch(0.5 0.02 260);
+
+  --primary: oklch(0.4 0.16 265);       /* deep indigo/blue */
+  --primary-foreground: oklch(0.98 0 0);
+  --success: oklch(0.72 0.19 145);      /* bright green */
+  --success-foreground: oklch(0.16 0.04 145);
+  --warning: oklch(0.8 0.16 85);        /* amber */
+  --warning-foreground: oklch(0.2 0.05 85);
+  --danger: oklch(0.63 0.22 25);        /* red */
+  --danger-foreground: oklch(0.98 0 0);
+  --ring: oklch(0.4 0.16 265 / 0.5);
+}
+
+.dark {
+  --background: oklch(0.19 0.02 265);
+  --foreground: oklch(0.95 0.01 260);
+  --card: oklch(0.24 0.025 265);
+  --card-foreground: oklch(0.95 0.01 260);
+  --border: oklch(0.34 0.02 260);
+  --muted: oklch(0.28 0.02 260);
+  --muted-foreground: oklch(0.7 0.02 260);
+
+  --primary: oklch(0.72 0.14 265);
+  --primary-foreground: oklch(0.15 0.03 265);
+  --success: oklch(0.75 0.19 145);
+  --success-foreground: oklch(0.14 0.04 145);
+  --warning: oklch(0.82 0.16 85);
+  --warning-foreground: oklch(0.18 0.05 85);
+  --danger: oklch(0.68 0.2 25);
+  --danger-foreground: oklch(0.14 0 0);
+  --ring: oklch(0.72 0.14 265 / 0.5);
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-border: var(--border);
+  --color-input: var(--border);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-success: var(--success);
+  --color-success-foreground: var(--success-foreground);
+  --color-warning: var(--warning);
+  --color-warning-foreground: var(--warning-foreground);
+  --color-danger: var(--danger);
+  --color-danger-foreground: var(--danger-foreground);
+  --color-ring: var(--ring);
+  --radius-lg: var(--radius);
+  --radius-md: calc(var(--radius) - 4px);
+  --radius-sm: calc(var(--radius) - 8px);
+  --font-sans: var(--font-inter);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+@layer base {
+  * {
+    border-color: var(--color-border);
+  }
+  body {
+    background: var(--color-background);
+    color: var(--color-foreground);
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+@keyframes fade-in {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.animate-fade-in { animation: fade-in 0.2s ease-out; }
+
+@keyframes pulse-soft {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+.animate-pulse-soft { animation: pulse-soft 1.6s ease-in-out infinite; }
+
+/* Hide scrollbars on the horizontally-scrolling chip rows without losing scroll. */
+.scrollbar-none {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
 }
