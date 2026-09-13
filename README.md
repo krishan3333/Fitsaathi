@@ -5,9 +5,10 @@
 A student fitness and sports PWA built for Smart India Hackathon Problem ID 26196.
 FitSaathi motivates students through friends, fits fitness into their timetable,
 and guides them to the best place and time to stay active — through friend
-challenges with live leaderboards, a rule-based smart quest planner, a
-weather/AQI-aware campus activity map (FitRoute), in-app Fit Window nudges,
-and live, peer-verified Squad Sessions.
+challenges with live leaderboards, a rule-based smart quest planner (with
+optional Gemini-generated personal quests layered on top, never in charge of
+selection), a weather/AQI-aware campus activity map (FitRoute), in-app Fit
+Window nudges, and live, peer-verified Squad Sessions.
 
 ## Tech stack
 
@@ -16,7 +17,9 @@ and live, peer-verified Squad Sessions.
 - MapLibre GL + OpenStreetMap for the campus map
 - Recharts for progress/activity charts
 - Open-Meteo for weather + air quality (no API key required)
-- Installable PWA (manifest, offline cache, app icons)
+- Google Gemini (optional) for personal quest *content* generation — see
+  `lib/quest-generator.ts`; selection logic stays rule-based either way
+- Installable PWA (manifest, offline cache, app icons), light/dark theme
 
 ## Project structure
 
@@ -27,15 +30,20 @@ app/                    Routes (App Router)
     challenges/         Fit Circles, challenges, leaderboards
     quest/              Smart Fitness Quest planner
     fitroute/           Campus map + Green Window + GPS sessions
+    squad/              Live, peer-verified Squad Sessions
     profile/            Profile, stats, privacy & settings
     notifications/      Notification centre
   coordinator/          Desktop-friendly coordinator dashboard (separate layout)
   login/, signup/, onboarding/
-  api/weather/route.ts  Open-Meteo + AQI proxy endpoint
+  api/                  weather (Open-Meteo+AQI proxy), nearby-places (OSM),
+                        quests/generate (Gemini quest content)
 components/             UI split by feature area (dashboard, challenges, quests,
-                        fitroute, leaderboard, coordinator, profile, ui, layout)
-lib/                    supabase/ clients+types, quest-engine, weather, geo,
-                        activity-stats, quest-context, utils
+                        fitroute, leaderboard, squad, coordinator, profile, ui, layout)
+lib/                    supabase/ clients+types, quest-engine + quest-generator,
+                        weather, geo, activity-stats, quest-context, time,
+                        fit-window + nudge-rules + nudge-generator (Fit Window
+                        nudges), squad + use-gps-tracker + use-squad-channel
+                        (Squad Sessions), utils
 supabase/
   migrations/           SQL schema, RLS policies, triggers, coordinator RPCs
   seed.sql              Campus content (quests, locations, badges) — no fake users
@@ -82,6 +90,8 @@ NEXT_PUBLIC_SUPABASE_URL=            # Project Settings → API
 NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=# Project Settings → API (anon/publishable key)
 NEXT_PUBLIC_MAPTILER_KEY=            # optional — vector map style; omit to use free OSM raster tiles
 AQI_API_KEY=                         # optional — reserved for a keyed AQI provider; Open-Meteo's free AQI API is used by default
+GEMINI_API_KEY=                      # optional — get one free at aistudio.google.com/apikey; without it,
+                                      # personal quest generation just falls back to the static catalogue
 ```
 
 Without Supabase configured, pages still render with proper loading/error states
@@ -210,12 +220,16 @@ back "Not verified — too short" instead of silently succeeding.
 - **Not built, by design:** AI camera form-checking, medical features, parent
   dashboards, complaint systems, talent scouting, government integrations.
 - **Quest planner** is a plain rule-based engine (`lib/quest-engine.ts`) — no
-  LLM/chatbot involved.
-- **Steps** are self-reported (manual entry, completed quests, or GPS-tracked
-  distance converted to an estimate) — the app never claims browser-pedometer
-  accuracy. `activities.source` (`manual` / `quest` / `gps_route`) keeps that
-  distinction, and Android Health Connect can plug in as a fourth source later
-  without changing the schema.
+  LLM/chatbot involved. Gemini only ever generates the *content* of a personal
+  quest (`lib/quest-generator.ts`); which quest gets recommended when is still
+  decided by the same rules for every quest, hand-written or generated.
+- **Steps** are self-reported (manual entry, completed quests, GPS-tracked
+  distance, or a peer-verified Squad Session) — the app never claims
+  browser-pedometer accuracy. `activities.source` (`manual` / `quest` /
+  `gps_route` / `squad`, the last with its own `peer_verified` flag) keeps
+  that distinction, weighted accordingly in challenge progress (`0013_anti_cheat.sql`,
+  `0021_squad_sessions.sql`). Android Health Connect can plug in as a fifth
+  source later without changing the schema.
 - **Coordinators** only ever see anonymized, aggregated stats — enforced at the
   database layer via `SECURITY DEFINER` RPCs (`coordinator_overview`,
   `coordinator_department_leaderboard`, `coordinator_route_usage`), not just
