@@ -1,17 +1,18 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Check, Loader2, UserPlus } from "lucide-react";
+import { AlertCircle, Check, Loader2, UserPlus } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogTrigger } from "@/components/ui/dialog";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { EmptyState } from "@/components/ui/empty-state";
 import { initials } from "@/lib/utils";
 
 interface Friend {
   id: string;
   name: string;
+  avatarUrl: string | null;
 }
 
 export function InviteFriendsDialog({ trigger, title, body }: { trigger: React.ReactNode; title: string; body: string }) {
@@ -20,6 +21,7 @@ export function InviteFriendsDialog({ trigger, title, body }: { trigger: React.R
   const [friends, setFriends] = useState<Friend[]>([]);
   const [selected, setSelected] = useState<Set<string>>(new Set());
   const [sent, setSent] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     if (!open) return;
@@ -38,9 +40,9 @@ export function InviteFriendsDialog({ trigger, title, body }: { trigger: React.R
       const mateIds = [...new Set((mates ?? []).map((m) => m.profile_id))].filter((id) => id !== userData.user!.id);
       // Names come from the curated public view — see migration 0005.
       const { data: profiles } = mateIds.length
-        ? await supabase.from("public_profiles").select("id, name").in("id", mateIds)
+        ? await supabase.from("public_profiles").select("id, name, avatar_url").in("id", mateIds)
         : { data: [] };
-      setFriends((profiles ?? []).map((p) => ({ id: p.id, name: p.name })));
+      setFriends((profiles ?? []).map((p) => ({ id: p.id, name: p.name, avatarUrl: p.avatar_url })));
       setLoading(false);
     })();
   }, [open]);
@@ -57,14 +59,23 @@ export function InviteFriendsDialog({ trigger, title, body }: { trigger: React.R
     if (next) {
       setLoading(true);
       setSent(false);
+      setError(null);
     }
   }
 
   async function sendInvites() {
+    setError(null);
     const supabase = createClient();
-    await supabase.from("notifications").insert(
-      [...selected].map((profile_id) => ({ profile_id, title, body, type: "invite" }))
-    );
+    const { error } = await supabase.rpc("notify_circle_mates", {
+      p_profile_ids: [...selected],
+      p_title: title,
+      p_body: body,
+      p_type: "invite",
+    });
+    if (error) {
+      setError("Couldn't send invites — try again.");
+      return;
+    }
     setSent(true);
     setSelected(new Set());
   }
@@ -91,6 +102,7 @@ export function InviteFriendsDialog({ trigger, title, body }: { trigger: React.R
                 className="flex w-full items-center gap-3 rounded-xl px-2 py-2 text-left hover:bg-muted"
               >
                 <Avatar>
+                  <AvatarImage src={f.avatarUrl ?? undefined} alt={f.name} />
                   <AvatarFallback>{initials(f.name)}</AvatarFallback>
                 </Avatar>
                 <span className="flex-1 text-sm font-medium">{f.name}</span>
@@ -101,6 +113,11 @@ export function InviteFriendsDialog({ trigger, title, body }: { trigger: React.R
         )}
 
         {sent && <p className="mt-3 text-center text-sm font-medium text-success">Invites sent!</p>}
+        {error && (
+          <p className="mt-3 flex items-center justify-center gap-1.5 text-center text-sm font-medium text-danger">
+            <AlertCircle className="size-4" /> {error}
+          </p>
+        )}
 
         {friends.length > 0 && (
           <Button className="mt-4 w-full" disabled={selected.size === 0} onClick={sendInvites}>

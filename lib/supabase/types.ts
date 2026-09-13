@@ -13,6 +13,9 @@ export type ChallengeType =
   | "department_vs_department" | "hostel_vs_hostel";
 export type ActivityType = "walk" | "run" | "cycle" | "workout" | "quest" | "gps_route";
 export type FreeSlot = { day: string; start: string; end: string };
+export type SquadActivityType = "walk" | "run" | "cycle" | "quest";
+export type SquadStatus = "pending" | "live" | "ended" | "cancelled";
+export type SquadVerifiedReason = "no_gps_fix" | "too_short" | "implausible_pace" | "solo" | "not_colocated";
 
 export type Profile = {
   id: string;
@@ -90,7 +93,9 @@ export type Activity = {
   steps: number;
   distance_km: number;
   active_minutes: number;
-  source: "manual" | "quest" | "gps_route";
+  source: "manual" | "quest" | "gps_route" | "squad";
+  peer_verified: boolean;
+  squad_session_id: string | null;
   occurred_on: string;
   created_at: string;
 }
@@ -115,6 +120,7 @@ export type QuestCompletion = {
   id: string;
   quest_id: string;
   profile_id: string;
+  squad_session_id: string | null;
   completed_at: string;
 }
 
@@ -157,6 +163,7 @@ export type Notification = {
   title: string;
   body: string;
   type: string;
+  link: string | null;
   is_read: boolean;
   created_at: string;
 }
@@ -173,6 +180,44 @@ export type UserBadge = {
   profile_id: string;
   badge_id: string;
   earned_at: string;
+}
+
+export type NudgeLog = {
+  id: string;
+  profile_id: string;
+  dedupe_key: string;
+  sent_at: string;
+}
+
+export type SquadSession = {
+  id: string;
+  host_id: string;
+  activity_type: SquadActivityType;
+  quest_id: string | null;
+  join_code: string;
+  status: SquadStatus;
+  started_at: string | null;
+  ended_at: string | null;
+  created_at: string;
+}
+
+export type SquadParticipant = {
+  id: string;
+  session_id: string;
+  profile_id: string;
+  joined_at: string;
+  left_at: string | null;
+  start_lat: number | null;
+  start_lng: number | null;
+  end_lat: number | null;
+  end_lng: number | null;
+  distance_km: number;
+  steps: number;
+  active_minutes: number;
+  last_checkpoint_at: string | null;
+  verified: boolean;
+  verified_reason: SquadVerifiedReason | null;
+  activity_id: string | null;
 }
 
 /** Columns other students are allowed to see (see migration 0005). */
@@ -200,6 +245,9 @@ export type Database = {
       notifications: Table<Notification, Partial<Notification>>;
       badges: Table<Badge, Partial<Badge>>;
       user_badges: Table<UserBadge, Partial<UserBadge>>;
+      nudge_log: Table<NudgeLog, Partial<NudgeLog> & { profile_id: string; dedupe_key: string }>;
+      squad_sessions: Table<SquadSession, Partial<SquadSession>>;
+      squad_participants: Table<SquadParticipant, Partial<SquadParticipant> & { session_id: string; profile_id: string }>;
     };
     Views: {
       public_profiles: { Row: PublicProfile; Relationships: [] };
@@ -234,6 +282,45 @@ export type Database = {
       join_circle_by_code: {
         Args: { p_invite_code: string };
         Returns: { id: string; name: string }[];
+      };
+      notify_circle_mates: {
+        Args: { p_profile_ids: string[]; p_title: string; p_body: string; p_type: string; p_link?: string | null };
+        Returns: number;
+      };
+      friends_free_for_slots: {
+        Args: { p_day: string };
+        Returns: { slot_start: string; slot_end: string; friend_names: string[] }[];
+      };
+      create_squad_session: {
+        Args: { p_activity_type: SquadActivityType; p_quest_id?: string | null };
+        Returns: { id: string; join_code: string }[];
+      };
+      join_squad_by_code: {
+        Args: { p_code: string };
+        Returns: { id: string; activity_type: SquadActivityType; quest_id: string | null; status: SquadStatus; host_id: string }[];
+      };
+      invite_to_squad: {
+        Args: { p_session_id: string; p_profile_ids: string[] };
+        Returns: number;
+      };
+      start_squad_session: {
+        Args: { p_session_id: string };
+        Returns: void;
+      };
+      cancel_squad_session: {
+        Args: { p_session_id: string };
+        Returns: void;
+      };
+      finalize_squad_session: {
+        Args: { p_session_id: string };
+        Returns: {
+          profile_id: string;
+          verified: boolean;
+          verified_reason: SquadVerifiedReason | null;
+          distance_km: number;
+          steps: number;
+          active_minutes: number;
+        }[];
       };
     };
   };

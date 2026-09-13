@@ -2,46 +2,98 @@
 
 @custom-variant dark (&:where(.dark, .dark *));
 
+/* ============================================================================
+   FitSaathi design tokens.
+
+   Colour rule for STATE: green / amber / red are reserved for *conditions*
+   (air quality, weather, verification) because the product's core vocabulary
+   is the green window. The brand accent sits outside that band — an electric
+   azure — so a coloured chip always means "here's the state of the world",
+   never "here's a button".
+
+   Colour rule for METRICS (the accent-* tokens below, modelled on Apple
+   Fitness's ring/tile palette): each stat gets its own hue so a screen of
+   numbers reads at a glance instead of one colour repeated everywhere. These
+   are decorative, not semantic — unlike primary/success/warning/danger,
+   accent-* never changes meaning based on which one is used where.
+   Dark mode runs true black + flat charcoal tiles (no border, no shadow) to
+   match that reference directly; light mode keeps the paper/ink system from
+   before, with the same five hues deepened to clear 4.5:1 on white.
+   ========================================================================= */
+
 :root {
   --radius: 1rem;
 
-  --background: oklch(0.985 0.003 250);
-  --foreground: oklch(0.22 0.03 265);
+  --background: oklch(0.985 0.005 255);   /* cool paper */
+  --foreground: oklch(0.21 0.03 264);     /* ink — navy-black, never grey */
   --card: oklch(1 0 0);
-  --card-foreground: oklch(0.22 0.03 265);
-  --border: oklch(0.9 0.01 260);
-  --muted: oklch(0.95 0.01 260);
-  --muted-foreground: oklch(0.5 0.02 260);
+  --card-foreground: oklch(0.21 0.03 264);
+  --border: oklch(0.915 0.01 258);
+  --muted: oklch(0.955 0.008 258);
+  --muted-foreground: oklch(0.53 0.022 260);
 
-  --primary: oklch(0.4 0.16 265);       /* deep indigo/blue */
-  --primary-foreground: oklch(0.98 0 0);
-  --success: oklch(0.72 0.19 145);      /* bright green */
-  --success-foreground: oklch(0.16 0.04 145);
-  --warning: oklch(0.8 0.16 85);        /* amber */
-  --warning-foreground: oklch(0.2 0.05 85);
-  --danger: oklch(0.63 0.22 25);        /* red */
-  --danger-foreground: oklch(0.98 0 0);
-  --ring: oklch(0.4 0.16 265 / 0.5);
+  --primary: oklch(0.54 0.225 264);       /* azure — the one chrome/nav colour */
+  --primary-foreground: oklch(0.99 0.002 255);
+  /* Deep enough to clear 4.5:1 on paper — these render as ~11px badge text,
+     so the usual bright-green/amber would fail at the size it's actually used. */
+  --success: oklch(0.545 0.15 152);       /* conditions: go */
+  --success-foreground: oklch(0.99 0 0);
+  --warning: oklch(0.55 0.135 68);        /* conditions: caution */
+  --warning-foreground: oklch(0.99 0 0);
+  --danger: oklch(0.56 0.205 27);         /* conditions: stop */
+  --danger-foreground: oklch(0.99 0 0);
+  --ring: oklch(0.54 0.225 264 / 0.45);
+
+  /* Per-metric tile colours — deepened for 4.5:1+ on white paper. */
+  --accent-pink: oklch(0.54 0.22 16);
+  --accent-purple: oklch(0.55 0.21 312.4);
+  --accent-blue: oklch(0.55 0.20 255.5);
+  --accent-green: oklch(0.50 0.16 147.4);
+  --accent-orange: oklch(0.52 0.15 50);
+
+  /* Elevation is a hierarchy, not a default: flat for structure, lift for
+     things you can press, float for things that sit above the page. */
+  --shadow-soft: 0 1px 2px oklch(0.21 0.03 264 / 0.04), 0 1px 3px oklch(0.21 0.03 264 / 0.03);
+  --shadow-lift: 0 1px 2px oklch(0.21 0.03 264 / 0.05), 0 8px 20px -6px oklch(0.21 0.03 264 / 0.10);
+  --shadow-float: 0 2px 4px oklch(0.21 0.03 264 / 0.05), 0 18px 40px -12px oklch(0.21 0.03 264 / 0.20);
 }
 
 .dark {
-  --background: oklch(0.19 0.02 265);
-  --foreground: oklch(0.95 0.01 260);
-  --card: oklch(0.24 0.025 265);
-  --card-foreground: oklch(0.95 0.01 260);
-  --border: oklch(0.34 0.02 260);
-  --muted: oklch(0.28 0.02 260);
-  --muted-foreground: oklch(0.7 0.02 260);
+  --background: oklch(0 0 0);             /* true black */
+  --foreground: oklch(1 0 0);
+  --card: oklch(0.227 0.004 286);         /* flat charcoal tile, iOS-style */
+  --card-foreground: oklch(1 0 0);
+  /* Same value as --card, on purpose: tiles read as separate surfaces purely
+     from sitting on true black, the way the reference does — a visible
+     hairline would fight that flatness. */
+  --border: oklch(0.227 0.004 286);
+  --muted: oklch(0.294 0.004 286);
+  --muted-foreground: oklch(0.72 0.008 286);
 
-  --primary: oklch(0.72 0.14 265);
-  --primary-foreground: oklch(0.15 0.03 265);
-  --success: oklch(0.75 0.19 145);
-  --success-foreground: oklch(0.14 0.04 145);
-  --warning: oklch(0.82 0.16 85);
-  --warning-foreground: oklch(0.18 0.05 85);
-  --danger: oklch(0.68 0.2 25);
-  --danger-foreground: oklch(0.14 0 0);
-  --ring: oklch(0.72 0.14 265 / 0.5);
+  --primary: oklch(0.70 0.17 262);
+  --primary-foreground: oklch(0.16 0.03 265);
+  --success: oklch(0.73 0.16 152);
+  --success-foreground: oklch(0.15 0.04 152);
+  --warning: oklch(0.78 0.14 76);
+  --warning-foreground: oklch(0.19 0.05 70);
+  --danger: oklch(0.68 0.19 27);
+  --danger-foreground: oklch(0.15 0.02 27);
+  --ring: oklch(0.70 0.17 262 / 0.5);
+
+  /* Vivid — these sit on charcoal/black tiles, so the AA floor is 3:1 (large
+     bold numerals), not 4.5:1, and all five clear it with room to spare. */
+  --accent-pink: oklch(0.658 0.232 16);
+  --accent-purple: oklch(0.615 0.213 312.4);
+  --accent-blue: oklch(0.624 0.206 255.5);
+  --accent-green: oklch(0.73 0.194 147.4);
+  --accent-orange: oklch(0.782 0.171 67.2);
+
+  /* Flat tiles on true black cast no visible shadow either way, but these stay
+     defined (rather than zeroed) so a card that lifts off another dark
+     surface — a modal over the page — still separates correctly. */
+  --shadow-soft: 0 1px 2px oklch(0 0 0 / 0.30);
+  --shadow-lift: 0 2px 6px oklch(0 0 0 / 0.34), 0 10px 24px -8px oklch(0 0 0 / 0.44);
+  --shadow-float: 0 4px 10px oklch(0 0 0 / 0.40), 0 22px 48px -14px oklch(0 0 0 / 0.58);
 }
 
 @theme inline {
@@ -62,10 +114,22 @@
   --color-danger: var(--danger);
   --color-danger-foreground: var(--danger-foreground);
   --color-ring: var(--ring);
+
+  --color-accent-pink: var(--accent-pink);
+  --color-accent-purple: var(--accent-purple);
+  --color-accent-blue: var(--accent-blue);
+  --color-accent-green: var(--accent-green);
+  --color-accent-orange: var(--accent-orange);
+
   --radius-lg: var(--radius);
   --radius-md: calc(var(--radius) - 4px);
   --radius-sm: calc(var(--radius) - 8px);
-  --font-sans: var(--font-inter);
+
+  --shadow-soft: var(--shadow-soft);
+  --shadow-lift: var(--shadow-lift);
+  --shadow-float: var(--shadow-float);
+
+  --font-sans: var(--font-archivo);
 }
 
 @layer base {
@@ -75,6 +139,41 @@
   body {
     background: var(--color-background);
     color: var(--color-foreground);
+    font-variation-settings: "wdth" 100;
+  }
+  /* Headings sit a touch tighter and narrower than body text — the width axis
+     is doing the work a second typeface usually would. */
+  h1, h2, h3 {
+    letter-spacing: -0.017em;
+  }
+  :focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+  }
+}
+
+@layer utilities {
+  /* The metric register: expanded, heavy, tight, tabular. Every number the
+     student is meant to read at a glance uses this. */
+  .metric {
+    font-variation-settings: "wdth" 118, "wght" 760;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.035em;
+    line-height: 0.95;
+  }
+  .metric-sm {
+    font-variation-settings: "wdth" 112, "wght" 700;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.02em;
+  }
+  .tnum {
+    font-variant-numeric: tabular-nums;
+  }
+  /* Wordmark + section headings: slightly narrowed, which reads as athletic
+     without tipping into condensed-poster territory. */
+  .display {
+    font-variation-settings: "wdth" 94, "wght" 680;
+    letter-spacing: -0.022em;
   }
 }
 
@@ -97,4 +196,12 @@
 }
 .scrollbar-none::-webkit-scrollbar {
   display: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }

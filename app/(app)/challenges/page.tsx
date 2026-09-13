@@ -11,17 +11,18 @@ import type { ChallengeType } from "@/lib/supabase/types";
 const TEAM_TYPES = new Set<ChallengeType>(["team_steps", "department_vs_department", "hostel_vs_hostel"]);
 
 async function loadChallenges(supabase: Awaited<ReturnType<typeof createClient>>, userId: string) {
-  const { data: memberships } = await supabase.from("circle_members").select("circle_id, fit_circles(id, name, invite_code)").eq("profile_id", userId);
-  const circles = (memberships ?? []).map((m) => m.fit_circles as unknown as { id: string; name: string; invite_code: string }).filter(Boolean);
+  const { data: memberships } = await supabase.from("circle_members").select("circle_id, fit_circles(id, name, invite_code, created_by)").eq("profile_id", userId);
+  const circles = (memberships ?? []).map((m) => m.fit_circles as unknown as { id: string; name: string; invite_code: string; created_by: string }).filter(Boolean);
 
   const circlesWithMembers = await Promise.all(
     circles.map(async (c) => {
-      const { data: members } = await supabase.from("circle_members").select("profile_id").eq("circle_id", c.id);
-      const memberIds = (members ?? []).map((m) => m.profile_id);
+      const { data: memberRows } = await supabase.from("circle_members").select("profile_id").eq("circle_id", c.id);
+      const memberIds = (memberRows ?? []).map((m) => m.profile_id);
       const { data: profiles } = memberIds.length
-        ? await supabase.from("public_profiles").select("id, name").in("id", memberIds)
+        ? await supabase.from("public_profiles").select("id, name, avatar_url").in("id", memberIds)
         : { data: [] };
-      return { ...c, members: (profiles ?? []) as { id: string; name: string }[] };
+      const members = (profiles ?? []).map((p) => ({ id: p.id, name: p.name, avatarUrl: p.avatar_url }));
+      return { ...c, members };
     })
   );
 
@@ -48,6 +49,7 @@ async function loadChallenges(supabase: Awaited<ReturnType<typeof createClient>>
     current: TEAM_TYPES.has(c.type) ? teamTotals.get(c.id) ?? 0 : Number(myProgress.get(c.id) ?? 0),
     isOfficial: c.is_official,
     isJoined: myProgress.has(c.id),
+    canDelete: c.created_by === userId,
     endDate: c.end_date,
   }));
 
@@ -73,7 +75,7 @@ export default async function ChallengesPage({ searchParams }: PageProps<"/chall
   return (
     <div className="space-y-6 pb-4">
       <div className="flex items-center justify-between">
-        <h1 className="text-xl font-semibold">Challenges</h1>
+        <h1 className="display text-[1.6rem] leading-none">Challenges</h1>
         <CreateChallengeLauncher autoOpen={create === "1"} />
       </div>
 
@@ -92,7 +94,7 @@ export default async function ChallengesPage({ searchParams }: PageProps<"/chall
         ) : (
           <div className="grid gap-3 sm:grid-cols-2">
             {circlesWithMembers.map((c) => (
-              <CircleCard key={c.id} name={c.name} inviteCode={c.invite_code} members={c.members} />
+              <CircleCard key={c.id} id={c.id} name={c.name} inviteCode={c.invite_code} members={c.members} canDelete={c.created_by === user.id} />
             ))}
           </div>
         )}

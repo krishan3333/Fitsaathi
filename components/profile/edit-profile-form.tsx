@@ -166,7 +166,7 @@ export function EditProfileForm({ profile }: { profile: Profile }) {
               ))}
             </div>
           </div>
-          <div className="flex items-center justify-between rounded-xl border border-border p-3.5">
+          <div className="flex items-center justify-between rounded-xl bg-muted p-3.5">
             <div>
               <p className="text-sm font-medium">Low-impact workouts</p>
               <p className="text-xs text-muted-foreground">Easier on joints</p>

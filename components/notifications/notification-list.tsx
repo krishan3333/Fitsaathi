@@ -1,7 +1,8 @@
 "use client";
 
 import { useEffect } from "react";
-import { Flame, MessageCircle, CloudRain, Sparkles, Trophy, Bell } from "lucide-react";
+import Link from "next/link";
+import { Flame, MessageCircle, CloudRain, Sparkles, Trophy, Bell, Users } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { Card, CardContent } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
@@ -15,6 +16,7 @@ const ICONS: Record<string, React.ComponentType<{ className?: string }>> = {
   streak: Flame,
   invite: Bell,
   reaction: MessageCircle,
+  squad: Users,
 };
 
 function timeAgo(iso: string) {
@@ -37,18 +39,29 @@ export function NotificationList({ notifications }: { notifications: Notificatio
     <div className="space-y-2">
       {notifications.map((n) => {
         const Icon = ICONS[n.type] ?? Bell;
+        const body = (
+          <CardContent className="flex items-start gap-3.5 p-4">
+            <div
+              className={cn(
+                "flex size-9 shrink-0 items-center justify-center rounded-xl ring-1 ring-inset",
+                n.is_read ? "bg-muted text-muted-foreground ring-border" : "bg-primary/10 text-primary ring-primary/20"
+              )}
+            >
+              <Icon className="size-4" />
+            </div>
+            <div className="min-w-0 flex-1">
+              <p className="text-sm font-medium tracking-[-0.01em]">{n.title}</p>
+              <p className="mt-0.5 text-sm leading-relaxed text-muted-foreground">{n.body}</p>
+              <p className="mt-1 text-[0.7rem] text-muted-foreground">{timeAgo(n.created_at)}</p>
+            </div>
+          </CardContent>
+        );
         return (
-          <Card key={n.id} className={cn(!n.is_read && "border-primary/30 bg-primary/5")}>
-            <CardContent className="flex items-start gap-3 py-3">
-              <div className="flex size-9 shrink-0 items-center justify-center rounded-full bg-muted">
-                <Icon className="size-4 text-primary" />
-              </div>
-              <div className="flex-1">
-                <p className="text-sm font-medium">{n.title}</p>
-                <p className="text-sm text-muted-foreground">{n.body}</p>
-                <p className="mt-0.5 text-xs text-muted-foreground">{timeAgo(n.created_at)}</p>
-              </div>
-            </CardContent>
+          <Card
+            key={n.id}
+            className={cn("transition-colors", !n.is_read && "border-primary/25 bg-primary/[0.04]", n.link && "hover:border-foreground/20")}
+          >
+            {n.link ? <Link href={n.link}>{body}</Link> : body}
           </Card>
         );
       })}

@@ -64,19 +64,19 @@ export default async function ProfilePage() {
 
   return (
     <div className="space-y-5 pb-4">
-      <Card>
+      <Card className="shadow-lift">
         <CardContent className="flex items-center gap-4 py-5">
           <AvatarUpload userId={user.id} name={profile.name} avatarUrl={profile.avatar_url} />
           <div className="min-w-0 flex-1">
-            <h1 className="truncate text-lg font-semibold">{profile.name}</h1>
+            <h1 className="display truncate text-[1.35rem] leading-tight">{profile.name}</h1>
             {(profile.college || profile.department || profile.account_type === "student") && (
-              <p className="truncate text-sm text-muted-foreground">
+              <p className="mt-0.5 truncate text-[0.82rem] text-muted-foreground">
                 {[profile.college, profile.department].filter(Boolean).join(" · ") || "Add your campus details"}
               </p>
             )}
-            <div className="mt-1.5 flex flex-wrap gap-1.5">
-              {profile.fitness_goal && <Badge variant="default">{profile.fitness_goal}</Badge>}
-              <Badge variant="success">{profile.level}</Badge>
+            <div className="mt-2 flex flex-wrap gap-1.5">
+              {profile.fitness_goal && <Badge variant="muted">{profile.fitness_goal}</Badge>}
+              <Badge variant="default">{profile.level}</Badge>
             </div>
           </div>
           <Button asChild variant="outline" size="sm">
@@ -89,24 +89,24 @@ export default async function ProfilePage() {
 
       <div className="grid grid-cols-3 gap-3">
         <Card>
-          <CardContent className="py-4 text-center">
-            <TrendingUp className="mx-auto mb-1 size-4 text-success" />
-            <p className="text-lg font-bold">{improvementPct > 0 ? "+" : ""}{improvementPct}%</p>
-            <p className="text-xs text-muted-foreground">vs last week</p>
+          <CardContent className="px-4 py-4">
+            <TrendingUp className="mb-2 size-4 text-accent-green" />
+            <p className="metric-sm text-accent-green text-[1.35rem]">{improvementPct > 0 ? "+" : ""}{improvementPct}<span className="text-[0.85rem] font-medium text-muted-foreground">%</span></p>
+            <p className="mt-0.5 text-[0.7rem] leading-tight text-muted-foreground">vs last week</p>
           </CardContent>
         </Card>
         <Card>
-          <CardContent className="py-4 text-center">
-            <Medal className="mx-auto mb-1 size-4 text-warning" />
-            <p className="text-lg font-bold">{wins.length}</p>
-            <p className="text-xs text-muted-foreground">Challenge wins</p>
+          <CardContent className="px-4 py-4">
+            <Medal className="mb-2 size-4 text-accent-orange" />
+            <p className="metric-sm text-accent-orange text-[1.35rem]">{wins.length}</p>
+            <p className="mt-0.5 text-[0.7rem] leading-tight text-muted-foreground">Challenge wins</p>
           </CardContent>
         </Card>
         <Card>
-          <CardContent className="py-4 text-center">
-            <Award className="mx-auto mb-1 size-4 text-primary" />
-            <p className="text-lg font-bold">{badges.length}</p>
-            <p className="text-xs text-muted-foreground">Badges</p>
+          <CardContent className="px-4 py-4">
+            <Award className="mb-2 size-4 text-accent-pink" />
+            <p className="metric-sm text-accent-pink text-[1.35rem]">{badges.length}</p>
+            <p className="mt-0.5 text-[0.7rem] leading-tight text-muted-foreground">Badges</p>
           </CardContent>
         </Card>
       </div>

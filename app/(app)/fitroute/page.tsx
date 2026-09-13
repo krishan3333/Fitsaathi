@@ -2,7 +2,6 @@ import { createClient } from "@/lib/supabase/server";
 import { ErrorState } from "@/components/ui/empty-state";
 import { LiveWeatherCard } from "@/components/fitroute/live-weather-card";
 import { FitRouteExplorer } from "@/components/fitroute/fitroute-explorer";
-import { MapPinned } from "lucide-react";
 
 async function loadFitRoute(supabase: Awaited<ReturnType<typeof createClient>>, userId: string) {
   const { data: profile, error: profileError } = await supabase.from("profiles").select("college").eq("id", userId).single();
@@ -36,9 +35,12 @@ export default async function FitRoutePage() {
 
   return (
     <div className="space-y-5 pb-4">
-      <h1 className="flex items-center gap-2 text-xl font-semibold">
-        <MapPinned className="size-5 text-primary" /> FitRoute
-      </h1>
+      <div>
+        <h1 className="display text-[1.6rem] leading-none">FitRoute</h1>
+        <p className="mt-2 max-w-[62ch] text-sm leading-relaxed text-muted-foreground">
+          Where to move on campus right now, based on live conditions and how busy each spot is.
+        </p>
+      </div>
 
       <LiveWeatherCard />
 

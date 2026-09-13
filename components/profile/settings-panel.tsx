@@ -68,7 +68,7 @@ export function SettingsPanel({ profile }: { profile: Profile }) {
           <CardTitle className="text-base">Settings</CardTitle>
         </CardHeader>
         <CardContent className="divide-y divide-border pt-0">
-          <Row label="Notifications" description="Streak reminders, challenge updates, quest nudges">
+          <Row label="Notifications" description="Fit Window nudges, streak reminders, challenge updates — shown in-app only, in the Notifications tab">
             <Switch defaultChecked={profile.notifications_enabled} disabled={saving === "notifications_enabled"} onCheckedChange={(v) => update("notifications_enabled", v)} />
           </Row>
           <Row label="Language">

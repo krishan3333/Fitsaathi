@@ -13,23 +13,27 @@ const ITEMS = [
   { href: "/profile", label: "Profile", icon: CircleUser },
 ];
 
+/** Floats clear of the page edge rather than sitting as a full-width bar —
+ * the content scrolls under it, which keeps the small screen feeling like a
+ * single surface instead of a stack of chrome. */
 export function BottomNav() {
   const pathname = usePathname();
   return (
-    <nav className="fixed inset-x-0 bottom-0 z-40 border-t border-border bg-card/95 backdrop-blur pb-[env(safe-area-inset-bottom)] md:hidden">
-      <ul className="mx-auto flex max-w-lg items-stretch justify-between px-2">
+    <nav className="fixed inset-x-0 bottom-0 z-40 px-3 pb-[max(0.6rem,env(safe-area-inset-bottom))] md:hidden">
+      <ul className="mx-auto flex max-w-md items-stretch justify-between gap-0.5 rounded-full bg-card/85 p-1.5 shadow-float ring-1 ring-foreground/8 backdrop-blur-xl">
         {ITEMS.map(({ href, label, icon: Icon }) => {
           const active = href === "/" ? pathname === "/" : pathname.startsWith(href);
           return (
             <li key={href} className="flex-1">
               <Link
                 href={href}
+                aria-current={active ? "page" : undefined}
                 className={cn(
-                  "flex flex-col items-center gap-0.5 py-2.5 text-[11px] font-medium transition-colors",
-                  active ? "text-primary" : "text-muted-foreground"
+                  "flex flex-col items-center gap-1 rounded-full py-2 text-[10.5px] font-medium transition-colors",
+                  active ? "bg-primary/10 text-primary" : "text-muted-foreground"
                 )}
               >
-                <Icon className={cn("size-5", active && "fill-primary/15")} strokeWidth={active ? 2.4 : 2} />
+                <Icon className="size-[1.15rem]" strokeWidth={active ? 2.3 : 1.9} />
                 {label}
               </Link>
             </li>

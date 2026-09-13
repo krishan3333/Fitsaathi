@@ -32,6 +32,18 @@ export function activeDaysCount(activities: Activity[]) {
   return new Set(activities.filter((a) => a.steps > 0 || a.active_minutes > 0).map((a) => a.occurred_on)).size;
 }
 
+/** Days since the most recent activity in the given window, by IST calendar
+ * date (not wall-clock hours) — 0 means "logged something today". A student
+ * with nothing in the window at all has no streak to rescue (returns 0), so
+ * their first quest isn't a guilt trip. Used by lib/quest-context.ts and
+ * lib/nudge-rules.ts (streak_rescue). */
+export function daysSinceLastActive(activities: Pick<Activity, "occurred_on">[], todayIsoDate: string): number {
+  const lastActive = activities.reduce<string | null>((max, a) => (!max || a.occurred_on > max ? a.occurred_on : max), null);
+  if (!lastActive) return 0;
+  const diffDays = Math.floor((new Date(todayIsoDate).getTime() - new Date(lastActive).getTime()) / 86400000);
+  return Math.max(0, diffDays);
+}
+
 export function personalRecords(activities: Activity[]) {
   const byDay = new Map<string, { steps: number; activeMinutes: number; distanceKm: number }>();
   for (const a of activities) {

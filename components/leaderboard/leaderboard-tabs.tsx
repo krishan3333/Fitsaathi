@@ -1,6 +1,6 @@
 import { Trophy } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { EmptyState } from "@/components/ui/empty-state";
 import { EmojiReactButton } from "@/components/leaderboard/emoji-react-button";
 import { formatNumber, initials, cn } from "@/lib/utils";
@@ -11,27 +11,44 @@ export interface LeaderboardRow {
   value: number;
   streak?: number;
   isSelf: boolean;
+  avatarUrl?: string | null;
 }
-
-const MEDALS = ["🥇", "🥈", "🥉"];
 
 function Row({ row, index, unit, viewerName }: { row: LeaderboardRow; index: number; unit: string; viewerName: string }) {
   return (
-    <div className={cn("flex items-center gap-3 rounded-xl px-3 py-2.5", row.isSelf && "bg-primary/5")}>
-      <span className="w-6 shrink-0 text-center text-sm font-semibold text-muted-foreground">{MEDALS[index] ?? index + 1}</span>
+    <div
+      className={cn(
+        "flex items-center gap-3 rounded-2xl px-3 py-2.5 transition-colors",
+        row.isSelf ? "bg-primary/5 ring-1 ring-inset ring-primary/15" : "hover:bg-muted/60"
+      )}
+    >
+      <span
+        className={cn(
+          "metric-sm w-5 shrink-0 text-center text-[0.95rem]",
+          index === 0 ? "text-primary" : "text-muted-foreground"
+        )}
+      >
+        {index + 1}
+      </span>
       <Avatar className="size-9">
+        <AvatarImage src={row.avatarUrl ?? undefined} alt={row.name} />
         <AvatarFallback>{initials(row.name)}</AvatarFallback>
       </Avatar>
-      <div className="flex-1 min-w-0">
-        <p className="truncate text-sm font-medium">{row.name}{row.isSelf && " (You)"}</p>
+      <div className="min-w-0 flex-1">
+        <p className="truncate text-sm font-medium tracking-[-0.01em]">
+          {row.name}
+          {row.isSelf && <span className="ml-1 text-muted-foreground">(you)</span>}
+        </p>
         {row.streak !== undefined && row.streak > 0 && (
-          <p className="text-xs text-muted-foreground">{row.streak}-day streak</p>
+          <p className="text-[0.72rem] text-muted-foreground">
+            <span className="tnum">{row.streak}</span>-day streak
+          </p>
         )}
       </div>
-      <span className="shrink-0 text-sm font-semibold">
+      <span className="metric-sm shrink-0 text-[0.95rem]">
         {row.value > 0 && unit === "%" ? "+" : ""}
         {unit === "%" ? row.value : formatNumber(row.value)}
-        {unit}
+        <span className="text-[0.72rem] font-medium text-muted-foreground">{unit}</span>
       </span>
       {!row.isSelf && <EmojiReactButton toProfileId={row.profileId} fromLabel={viewerName} />}
     </div>
@@ -64,7 +81,7 @@ export function LeaderboardTabs({
   return (
     <Tabs defaultValue="total">
       <TabsList>
-        <TabsTrigger value="total">Total Activity</TabsTrigger>
+        <TabsTrigger value="total">Total activity</TabsTrigger>
         <TabsTrigger value="improvement">Improvement League</TabsTrigger>
       </TabsList>
       <TabsContent value="total" className="space-y-0.5">

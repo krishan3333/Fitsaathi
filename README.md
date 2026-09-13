@@ -5,8 +5,9 @@
 A student fitness and sports PWA built for Smart India Hackathon Problem ID 26196.
 FitSaathi motivates students through friends, fits fitness into their timetable,
 and guides them to the best place and time to stay active — through friend
-challenges with live leaderboards, a rule-based smart quest planner, and a
-weather/AQI-aware campus activity map (FitRoute).
+challenges with live leaderboards, a rule-based smart quest planner, a
+weather/AQI-aware campus activity map (FitRoute), in-app Fit Window nudges,
+and live, peer-verified Squad Sessions.
 
 ## Tech stack
 
@@ -51,11 +52,8 @@ npm install
 ### 2. Create a Supabase project
 
 1. Create a project at [supabase.com](https://supabase.com).
-2. In the SQL editor, run the migrations in order:
-   - `supabase/migrations/0001_init.sql` — schema + RLS policies
-   - `supabase/migrations/0002_activity_triggers.sql` — streaks, badges, challenge progress
-   - `supabase/migrations/0003_storage.sql` — `avatars` storage bucket + policies
-   - `supabase/migrations/0004_coordinator_broadcast.sql` — announcement RPC
+2. In the SQL editor, run every file in `supabase/migrations/` in order
+   (`0001_init.sql`, `0002_...`, ... through the highest-numbered file).
 3. Run `supabase/seed.sql` to load the campus content library — the quest
    catalogue, FitRoute locations, and badge definitions. It creates **no user
    accounts**: students sign up through the app itself.
@@ -131,11 +129,72 @@ where id = (select id from auth.users where email = 'you@college.edu');
 
 ### 5. Tests
 
-The rule-based quest planner (`lib/quest-engine.ts`) has a small self-check:
+The rule-based quest planner (`lib/quest-engine.ts`) and the Fit Window /
+nudge engines (`lib/fit-window.ts`, `lib/nudge-rules.ts`) have unit tests:
 
 ```bash
 npm test
 ```
+
+## Fit Window nudges (in-app only)
+
+The app spots when a student's free timetable slot, good weather/AQI, and
+free circle-mates line up ("Free 5:30–6:00 PM, AQI 78, Aditi & Imran are free.
+Group walk?") and surfaces it — but only ever as an in-app notification,
+generated the moment the student opens the dashboard. There is no background
+delivery: no push subscriptions, no OS notifications, no service-role key, no
+cron job. A student who never opens the app never gets a notification.
+
+- `lib/fit-window.ts` — which of today's free slots are actually good (pure,
+  unit-tested).
+- `lib/nudge-rules.ts` — which nudge fires given those windows plus streak/
+  circle context (pure, unit-tested).
+- `lib/nudge-generator.ts` — called once from `app/(app)/page.tsx` on every
+  dashboard load; runs `buildNudges()` and inserts any new ones into
+  `notifications`, using `nudge_log`'s unique `(profile_id, dedupe_key)` as a
+  same-day dedupe claim so re-opening the dashboard doesn't duplicate them.
+  Uses the caller's own RLS-scoped session throughout — never elevated
+  privileges — since it only ever acts on the signed-in student's own data.
+
+The **Notifications** toggle in Profile → Settings controls whether this
+runs at all for that student. To try it: adjust your free slots/timetable so
+a window lines up with "now" in your testing timezone, open the dashboard,
+and check the **Notifications** tab.
+
+## Squad Sessions
+
+A live group walk/run/cycle (or quest) where everyone's progress streams to a
+shared board in real time, and finishing together gets the activity stamped
+**peer-verified** — the server checks the group was actually colocated
+(everyone's start and end GPS fixes within 150m, ≥5 min of overlapping
+session time), not just that the numbers look plausible. Peer-verified
+activity counts more toward challenge progress than a solo GPS log.
+
+- Schema, RLS, and every RPC (create/join/invite/start/cancel/finalize) live
+  in `supabase/migrations/0021_squad_sessions.sql` — no client ever inserts
+  into `squad_sessions`/`squad_participants` directly.
+- `finalize_squad_session` labels each participant `verified_reason` when it
+  isn't peer-verified: `no_gps_fix`, `too_short` (< 5 min), `implausible_pace`
+  (and in that one case, no activity is logged at all — same anti-cheat pace
+  ceilings as GPS routes), `solo` (nobody else had fixes either), or
+  `not_colocated`.
+- Realtime uses a private channel (`squad:<session-id>`), authorized by RLS
+  policies on `realtime.messages` (`is_squad_member(...)`) — see the bottom of
+  the migration. This requires a Supabase project with Realtime's Broadcast
+  Authorization feature (the `realtime.messages` table); if your project
+  predates it, upgrade the Realtime service in the dashboard.
+- `lib/use-gps-tracker.ts` drives live tracking (shared with the plain GPS
+  route dialog): fixes worse than 50m accuracy are dropped, and movement
+  under 3m between fixes doesn't count as distance, so standing still doesn't
+  slowly accumulate fake steps.
+
+To try it: **Squad** tab (bottom nav / dashboard quick action) → **Start**,
+pick an activity, then **Invite to squad** to share the join code — a second
+account joins via **Join by code** or the shared link. On a phone, run
+`npx next dev --experimental-https -H 0.0.0.0` so a second device on the same
+network can reach it over HTTPS (required for GPS). Worth rehearsing the
+negative case too: end a session after under a minute and confirm it comes
+back "Not verified — too short" instead of silently succeeding.
 
 ## Deployment (Vercel)
 

@@ -6,7 +6,7 @@ import { formatNumber } from "@/lib/utils";
 function ChartTooltip({ active, payload, label, unit }: { active?: boolean; payload?: { value: number }[]; label?: string; unit: string }) {
   if (!active || !payload?.length) return null;
   return (
-    <div className="rounded-lg border border-border bg-card px-3 py-2 text-xs shadow-md">
+    <div className="rounded-lg bg-card px-3 py-2 text-xs shadow-float ring-1 ring-foreground/8">
       <p className="font-medium">{label}</p>
       <p className="text-muted-foreground">{formatNumber(payload[0].value)} {unit}</p>
     </div>

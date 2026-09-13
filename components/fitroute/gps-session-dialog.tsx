@@ -1,78 +1,35 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Loader2, MapPin, Navigation, Square } from "lucide-react";
+import { Loader2, MapPin, Navigation, Square, Users } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
-import { haversineKm, estimateStepsFromDistance } from "@/lib/geo";
+import { estimateStepsFromDistance } from "@/lib/geo";
+import { useGpsTracker } from "@/lib/use-gps-tracker";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogTrigger } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
+import { StartSquadDialog } from "@/components/squad/start-squad-dialog";
 import type { ActivityType } from "@/lib/supabase/types";
 
-type Status = "idle" | "tracking" | "saving" | "done" | "error";
+type SaveStatus = "idle" | "saving" | "done";
 
 export function GpsSessionDialog({ locationName, trigger }: { locationName: string; trigger: React.ReactNode }) {
   const router = useRouter();
   const [open, setOpen] = useState(false);
-  const [status, setStatus] = useState<Status>("idle");
+  const [saveStatus, setSaveStatus] = useState<SaveStatus>("idle");
   const [type, setType] = useState<ActivityType>("walk");
-  const [distanceKm, setDistanceKm] = useState(0);
-  const [elapsedSec, setElapsedSec] = useState(0);
-  const [error, setError] = useState<string | null>(null);
-
-  const watchIdRef = useRef<number | null>(null);
-  const lastPointRef = useRef<{ lat: number; lng: number } | null>(null);
-  const startedAtRef = useRef<number>(0);
-  const tickRef = useRef<ReturnType<typeof setInterval> | null>(null);
-
-  useEffect(
-    () => () => {
-      if (watchIdRef.current !== null) navigator.geolocation.clearWatch(watchIdRef.current);
-      if (tickRef.current) clearInterval(tickRef.current);
-    },
-    []
-  );
-
-  function start() {
-    if (!("geolocation" in navigator)) {
-      setError("GPS isn't available on this device/browser.");
-      setStatus("error");
-      return;
-    }
-    setDistanceKm(0);
-    setElapsedSec(0);
-    lastPointRef.current = null;
-    startedAtRef.current = Date.now();
-    setStatus("tracking");
-
-    watchIdRef.current = navigator.geolocation.watchPosition(
-      (pos) => {
-        const point = { lat: pos.coords.latitude, lng: pos.coords.longitude };
-        if (lastPointRef.current) {
-          setDistanceKm((d) => d + haversineKm(lastPointRef.current!, point));
-        }
-        lastPointRef.current = point;
-      },
-      () => {
-        setError("Couldn't access your location — check permissions.");
-        setStatus("error");
-      },
-      { enableHighAccuracy: true, maximumAge: 5000 }
-    );
-
-    tickRef.current = setInterval(() => setElapsedSec(Math.round((Date.now() - startedAtRef.current) / 1000)), 1000);
-  }
-
-  function stopTracking() {
-    if (watchIdRef.current !== null) navigator.geolocation.clearWatch(watchIdRef.current);
-    if (tickRef.current) clearInterval(tickRef.current);
-  }
+  const tracker = useGpsTracker();
+  const { distanceKm, elapsedSec, error } = tracker;
+  // tracker.status covers idle/tracking/error; saveStatus layers saving/done
+  // on top once tracking has actually stopped — the two never overlap since
+  // saveSession() always calls tracker.stop() first.
+  const status = saveStatus !== "idle" ? saveStatus : tracker.status;
 
   async function saveSession() {
-    stopTracking();
-    setStatus("saving");
+    tracker.stop();
+    setSaveStatus("saving");
     const supabase = createClient();
     const { data: userData } = await supabase.auth.getUser();
     if (!userData.user) return;
@@ -89,14 +46,14 @@ export function GpsSessionDialog({ locationName, trigger }: { locationName: stri
       source: "gps_route",
     });
 
-    setStatus("done");
+    setSaveStatus("done");
     router.refresh();
   }
 
   function handleOpenChange(next: boolean) {
-    if (!next) stopTracking();
+    if (!next) tracker.stop();
     setOpen(next);
-    if (!next) setStatus("idle");
+    if (!next) setSaveStatus("idle");
   }
 
   return (
@@ -123,9 +80,17 @@ export function GpsSessionDialog({ locationName, trigger }: { locationName: stri
                 </SelectContent>
               </Select>
             </div>
-            <Button className="w-full" onClick={start}>
+            <Button className="w-full" onClick={tracker.start}>
               <Navigation /> Start Route
             </Button>
+            <StartSquadDialog
+              defaultActivityType={type as "walk" | "run" | "cycle"}
+              trigger={
+                <Button variant="outline" className="w-full">
+                  <Users /> Do this with your squad
+                </Button>
+              }
+            />
           </div>
         )}
 

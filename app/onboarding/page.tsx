@@ -112,21 +112,24 @@ export default function OnboardingPage() {
           </SignOutButton>
         </div>
       )}
-      <div className="mb-6">
-        <p className="text-sm font-medium text-muted-foreground">
-          Step {step + 1} of {STEPS.length} — {STEPS[step]}
-        </p>
-        <div className="mt-2 flex gap-1.5">
+      <div className="mb-7">
+        <div className="flex gap-1.5">
           {STEPS.map((s, i) => (
-            <div key={s} className={cn("h-1.5 flex-1 rounded-full", i <= step ? "bg-primary" : "bg-muted")} />
+            <div key={s} className={cn("h-1 flex-1 rounded-full transition-colors", i <= step ? "bg-primary" : "bg-muted")} />
           ))}
         </div>
+        <p className="mt-2.5 text-[0.75rem] text-muted-foreground">
+          <span className="tnum">
+            {step + 1} of {STEPS.length}
+          </span>{" "}
+          · {STEPS[step]}
+        </p>
       </div>
 
       <div className="flex-1 space-y-5">
         {step === 0 && (
           <>
-            <h1 className="text-xl font-semibold">Tell us about you</h1>
+            <h1 className="display text-[1.6rem] leading-tight">Tell us about you</h1>
             <div className="space-y-1.5">
               <Label>Name</Label>
               <Input value={name} onChange={(e) => setName(e.target.value)} placeholder="Your full name" />
@@ -158,7 +161,7 @@ export default function OnboardingPage() {
 
         {step === 1 && (
           <>
-            <h1 className="text-xl font-semibold">What&apos;s your goal?</h1>
+            <h1 className="display text-[1.6rem] leading-tight">What&apos;s your goal?</h1>
             <div className="space-y-1.5">
               <Label>Fitness goal</Label>
               <div className="flex flex-wrap gap-2">
@@ -180,7 +183,7 @@ export default function OnboardingPage() {
 
         {step === 2 && (
           <>
-            <h1 className="text-xl font-semibold">Your preferences</h1>
+            <h1 className="display text-[1.6rem] leading-tight">Your preferences</h1>
             <div className="space-y-1.5">
               <Label>Preferred activities</Label>
               <div className="flex flex-wrap gap-2">
@@ -225,7 +228,7 @@ export default function OnboardingPage() {
 
         {step === 3 && (
           <>
-            <h1 className="text-xl font-semibold">When are you usually free?</h1>
+            <h1 className="display text-[1.6rem] leading-tight">When are you usually free?</h1>
             <p className="text-sm text-muted-foreground">Tap the slots that fit your timetable — used to suggest quests at the right time.</p>
             <FreeSlotPicker value={slots} onChange={setSlots} />
           </>

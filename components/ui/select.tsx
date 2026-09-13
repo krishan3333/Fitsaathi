@@ -11,14 +11,14 @@ function SelectTrigger({ className, children, ...props }: React.ComponentProps<t
   return (
     <SelectPrimitive.Trigger
       className={cn(
-        "flex h-11 w-full items-center justify-between rounded-xl border border-border bg-background px-3.5 text-sm outline-none focus-visible:ring-2 focus-visible:ring-ring",
+        "group flex h-11 w-full items-center justify-between gap-2 rounded-xl border border-border bg-background px-3.5 text-sm outline-none transition-[border-color,box-shadow] data-[state=open]:border-primary focus-visible:border-primary focus-visible:ring-[3px] focus-visible:ring-primary/18",
         className
       )}
       {...props}
     >
       {children}
       <SelectPrimitive.Icon asChild>
-        <ChevronDown className="size-4 opacity-60" />
+        <ChevronDown className="size-4 shrink-0 text-muted-foreground transition-transform duration-200 group-data-[state=open]:rotate-180" />
       </SelectPrimitive.Icon>
     </SelectPrimitive.Trigger>
   );
@@ -28,9 +28,9 @@ function SelectContent({ className, children, ...props }: React.ComponentProps<t
   return (
     <SelectPrimitive.Portal>
       <SelectPrimitive.Content
-        className={cn("z-50 max-h-72 overflow-y-auto rounded-xl border border-border bg-card p-1 shadow-lg", className)}
+        className={cn("z-50 max-h-72 min-w-[var(--radix-select-trigger-width)] overflow-y-auto rounded-xl bg-card p-1.5 shadow-float ring-1 ring-foreground/8", className)}
         position="popper"
-        sideOffset={4}
+        sideOffset={6}
         {...props}
       >
         <SelectPrimitive.Viewport>{children}</SelectPrimitive.Viewport>
@@ -43,7 +43,7 @@ function SelectItem({ className, children, ...props }: React.ComponentProps<type
   return (
     <SelectPrimitive.Item
       className={cn(
-        "relative flex cursor-pointer select-none items-center rounded-lg py-2 pl-8 pr-3 text-sm outline-none data-[highlighted]:bg-muted",
+        "relative flex cursor-pointer select-none items-center rounded-lg py-2 pl-8 pr-3 text-sm outline-none transition-colors data-[highlighted]:bg-muted data-[state=checked]:font-medium data-[state=checked]:text-primary",
         className
       )}
       {...props}

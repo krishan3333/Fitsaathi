@@ -27,9 +27,7 @@ export default async function NotificationsPage() {
 
   return (
     <div className="space-y-4 pb-4">
-      <h1 className="flex items-center gap-2 text-xl font-semibold">
-        <Bell className="size-5 text-primary" /> Notifications
-      </h1>
+      <h1 className="display text-[1.6rem] leading-none">Notifications</h1>
       {notifications.length === 0 ? (
         <EmptyState icon={Bell} title="You&apos;re all caught up" description="Challenge updates, quest nudges, and streak reminders show up here." />
       ) : (

@@ -4,21 +4,25 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-full text-sm font-medium transition-colors disabled:pointer-events-none disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring [&_svg]:size-4 [&_svg]:shrink-0",
+  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-full font-medium tracking-[-0.01em] transition-[transform,background-color,border-color,box-shadow,color] duration-150 active:scale-[0.975] disabled:pointer-events-none disabled:opacity-45 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background [&_svg]:size-4 [&_svg]:shrink-0",
   {
     variants: {
       variant: {
-        default: "bg-primary text-primary-foreground hover:opacity-90",
-        success: "bg-success text-success-foreground hover:opacity-90",
-        outline: "border border-border bg-transparent hover:bg-muted",
-        ghost: "hover:bg-muted",
-        destructive: "bg-danger text-danger-foreground hover:opacity-90",
+        default: "bg-primary text-primary-foreground shadow-lift hover:shadow-float hover:-translate-y-px",
+        success: "bg-success text-success-foreground shadow-lift hover:shadow-float hover:-translate-y-px",
+        // A ring rather than a border: dark mode's border colour is tuned to
+        // vanish against the *page*, and this button is just as often nested
+        // a level deeper (inside a Card, where bg-card would vanish too) —
+        // bg-muted plus a fixed-opacity ring reads correctly in both places.
+        outline: "bg-muted text-foreground ring-1 ring-inset ring-foreground/10 hover:bg-foreground/8",
+        ghost: "text-muted-foreground hover:bg-muted hover:text-foreground",
+        destructive: "bg-danger text-danger-foreground shadow-lift hover:shadow-float hover:-translate-y-px",
         link: "text-primary underline-offset-4 hover:underline",
       },
       size: {
-        default: "h-10 px-5 py-2",
-        sm: "h-8 px-3.5 text-xs",
-        lg: "h-12 px-6 text-base",
+        default: "h-11 px-5 text-sm",
+        sm: "h-9 px-4 text-[13px]",
+        lg: "h-12 px-7 text-base",
         icon: "size-10",
       },
     },

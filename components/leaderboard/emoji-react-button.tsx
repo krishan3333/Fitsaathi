@@ -5,22 +5,22 @@ import { SmilePlus } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { cn } from "@/lib/utils";
 
-const EMOJIS = ["🔥", "💪", "👏", "🚀", "😮"];
+export const EMOJIS = ["🔥", "💪", "👏", "🚀", "😮"];
 
 export function EmojiReactButton({ toProfileId, fromLabel }: { toProfileId: string; fromLabel: string }) {
   const [open, setOpen] = useState(false);
   const [sent, setSent] = useState<string | null>(null);
 
   async function react(emoji: string) {
-    setSent(emoji);
     setOpen(false);
     const supabase = createClient();
-    await supabase.from("notifications").insert({
-      profile_id: toProfileId,
-      title: "Someone reacted to your progress",
-      body: `${fromLabel} sent ${emoji}`,
-      type: "reaction",
+    const { error } = await supabase.rpc("notify_circle_mates", {
+      p_profile_ids: [toProfileId],
+      p_title: "Someone reacted to your progress",
+      p_body: `${fromLabel} sent ${emoji}`,
+      p_type: "reaction",
     });
+    if (!error) setSent(emoji);
   }
 
   if (sent) return <span className="text-base">{sent}</span>;
@@ -36,7 +36,7 @@ export function EmojiReactButton({ toProfileId, fromLabel }: { toProfileId: stri
         <SmilePlus className="size-4" />
       </button>
       {open && (
-        <div className="absolute right-0 top-full z-10 mt-1 flex gap-0.5 rounded-full border border-border bg-card p-1 shadow-md">
+        <div className="absolute right-0 top-full z-10 mt-1 flex gap-0.5 rounded-full bg-card p-1 shadow-float ring-1 ring-foreground/8">
           {EMOJIS.map((e) => (
             <button
               key={e}

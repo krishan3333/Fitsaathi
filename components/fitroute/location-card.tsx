@@ -33,25 +33,31 @@ export function LocationCard({ spot, selected, onSelect }: { spot: MapSpot; sele
   if (spot.distanceKm !== undefined) detailParts.push(`${spot.distanceKm.toFixed(1)} km away`);
 
   return (
-    <Card className={cn("cursor-pointer transition-colors", selected && "border-primary ring-1 ring-primary/30")} onClick={onSelect}>
+    <Card
+      className={cn(
+        "cursor-pointer transition-[border-color,box-shadow]",
+        selected ? "border-primary shadow-lift ring-1 ring-primary/25" : "hover:border-foreground/15"
+      )}
+      onClick={onSelect}
+    >
       <CardContent className="py-4">
-        <div className="flex items-start justify-between gap-2">
-          <div>
-            <h3 className="font-medium">{spot.name}</h3>
-            <p className="text-xs text-muted-foreground">{detailParts.join(" · ")}</p>
+        <div className="flex items-start justify-between gap-3">
+          <div className="min-w-0">
+            <h3 className="font-semibold tracking-[-0.015em]">{spot.name}</h3>
+            <p className="mt-0.5 text-[0.72rem] text-muted-foreground">{detailParts.join(" · ")}</p>
           </div>
-          {isCurated && <Badge variant={spot.isOpen ? "success" : "danger"}>{spot.isOpen ? "Open" : "Closed"}</Badge>}
+          {isCurated && <Badge variant={spot.isOpen ? "success" : "danger"} className="shrink-0">{spot.isOpen ? "Open" : "Closed"}</Badge>}
         </div>
 
-        <div className="mt-3 flex flex-wrap items-center gap-2">
+        <div className="mt-3 flex flex-wrap items-center gap-1.5">
           {isCurated ? (
             <>
-              <Badge variant={CROWD_VARIANT[spot.crowdLevel ?? "Low"]}><Users className="size-3" /> {spot.crowdLevel} crowd</Badge>
-              <Badge variant="muted"><ShieldCheck className="size-3" /> {spot.safetyRating} lighting</Badge>
-              {spot.hasWater && <Badge variant="muted"><Droplet className="size-3" /> Water</Badge>}
+              <Badge variant={CROWD_VARIANT[spot.crowdLevel ?? "Low"]}><Users /> {spot.crowdLevel} crowd</Badge>
+              <Badge variant="muted"><ShieldCheck /> {spot.safetyRating} lighting</Badge>
+              {spot.hasWater && <Badge variant="muted"><Droplet /> Water</Badge>}
             </>
           ) : (
-            <Badge variant="muted"><MapPin className="size-3" /> via OpenStreetMap</Badge>
+            <Badge variant="muted"><MapPin /> via OpenStreetMap</Badge>
           )}
         </div>
 
@@ -61,13 +67,13 @@ export function LocationCard({ spot, selected, onSelect }: { spot: MapSpot; sele
               locationName={spot.name}
               trigger={
                 <Button className="w-full" size="sm" disabled={isCurated && !spot.isOpen}>
-                  Start Route
+                  Start route
                 </Button>
               }
             />
             {isCurated && (
-              <div className="rounded-xl bg-muted p-3">
-                <p className="mb-2 text-xs font-medium text-muted-foreground">Is this place crowded now?</p>
+              <div className="rounded-2xl border border-border bg-muted/50 p-3.5">
+                <p className="mb-2.5 text-[0.78rem] font-medium">Is this place crowded now?</p>
                 {checkinSaved ? (
                   <p className="flex items-center gap-1.5 text-sm text-success"><Check className="size-4" /> Thanks for the check-in!</p>
                 ) : (

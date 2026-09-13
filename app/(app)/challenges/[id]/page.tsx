@@ -7,7 +7,15 @@ import { LeaderboardTabs, type LeaderboardRow } from "@/components/leaderboard/l
 import { RealtimeRefresher } from "@/components/leaderboard/realtime-refresher";
 import { formatNumber } from "@/lib/utils";
 
-type ParticipantProfile = { id: string; name: string; nickname: string | null; use_nickname: boolean; hide_steps: boolean; current_streak: number };
+type ParticipantProfile = {
+  id: string;
+  name: string;
+  nickname: string | null;
+  use_nickname: boolean;
+  hide_steps: boolean;
+  current_streak: number;
+  avatar_url: string | null;
+};
 
 function displayName(p: ParticipantProfile) {
   return p.use_nickname && p.nickname ? p.nickname : p.name;
@@ -29,7 +37,7 @@ async function loadChallenge(supabase: Awaited<ReturnType<typeof createClient>>,
   const { data: publicProfiles } = participantIds.length
     ? await supabase
         .from("public_profiles")
-        .select("id, name, nickname, use_nickname, hide_steps, current_streak")
+        .select("id, name, nickname, use_nickname, hide_steps, current_streak, avatar_url")
         .in("id", participantIds)
     : { data: [] };
   const profileById = new Map((publicProfiles ?? []).map((p) => [p.id, p as ParticipantProfile]));
@@ -51,6 +59,7 @@ async function loadChallenge(supabase: Awaited<ReturnType<typeof createClient>>,
       value: r.profile.hide_steps && r.profile.id !== userId ? 0 : r.progress,
       streak: r.profile.current_streak,
       isSelf: r.profile.id === userId,
+      avatarUrl: r.profile.avatar_url,
     }));
 
   // Improvement League: current challenge-window metric vs an equal-length prior
@@ -115,6 +124,7 @@ async function loadChallenge(supabase: Awaited<ReturnType<typeof createClient>>,
           name: displayName(r.profile),
           value: pct,
           isSelf: r.profile.id === userId,
+          avatarUrl: r.profile.avatar_url,
         };
       })
       .sort((a, b) => b.value - a.value);
