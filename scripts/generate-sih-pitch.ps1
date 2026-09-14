@@ -1,5 +1,5 @@
 <#
-Creates an editable SIH pitch deck for FitSaathi using Microsoft PowerPoint.
+Creates an editable SIH pitch deck for Moveup using Microsoft PowerPoint.
 The deck deliberately follows the six-slide rhythm of the supplied winning
 reference deck, while all product claims are grounded in this repository.
 #>
@@ -8,8 +8,8 @@ $ErrorActionPreference = "Stop"
 Add-Type -AssemblyName System.Drawing
 
 $outputDirectory = Join-Path $PSScriptRoot "..\deliverables"
-$outputPath = Join-Path $outputDirectory "FitSaathi_SIH26196_Pitch.pptx"
-$pdfPath = Join-Path $outputDirectory "FitSaathi_SIH26196_Pitch.pdf"
+$outputPath = Join-Path $outputDirectory "Moveup_SIH26196_Pitch.pptx"
+$pdfPath = Join-Path $outputDirectory "Moveup_SIH26196_Pitch.pdf"
 New-Item -ItemType Directory -Force -Path $outputDirectory | Out-Null
 
 if (Test-Path -LiteralPath $outputPath) { Remove-Item -LiteralPath $outputPath -Force }
@@ -99,7 +99,7 @@ function Add-Pill($slide, [string]$text, [double]$x, [double]$y, [double]$w, $fi
 function Add-Header($slide, [string]$section, [int]$number, [bool]$dark = $false) {
   $titleColor = if ($dark) { $white } else { $ink }
   $minorColor = if ($dark) { $minorText } else { $muted }
-  Add-Text $slide "FITSAATHI" 44 28 110 16 10 $azure $true $ppAlignLeft "Aptos Display" | Out-Null
+  Add-Text $slide "MOVEUP" 44 28 110 16 10 $azure $true $ppAlignLeft "Aptos Display" | Out-Null
   Add-Text $slide $section.ToUpper() 44 52 500 14 10 $minorColor $true $ppAlignLeft | Out-Null
   Add-Text $slide ("0{0}" -f $number) 884 28 32 16 10 $minorColor $true $ppAlignRight | Out-Null
   $rule = $slide.Shapes.AddLine(44, 76, 916, 76)
@@ -136,7 +136,7 @@ try {
   Add-Box $slide $msoShapeOval 723 242 88 88 $white | Out-Null
   $slide.Shapes.Item($slide.Shapes.Count).Fill.Transparency = 0.82
   Add-Pill $slide "SMART INDIA HACKATHON 2026" 45 46 192 $azure $white
-  Add-Text $slide "FitSaathi" 45 143 490 58 43 $white $true $ppAlignLeft "Aptos Display" | Out-Null
+  Add-Text $slide "Moveup" 45 143 490 58 43 $white $true $ppAlignLeft "Aptos Display" | Out-Null
   Add-Text $slide "Fitness that fits student life." 47 208 465 38 22 $lightText $false | Out-Null
   Add-Text $slide "A campus fitness PWA that finds the right time, place and people for students to move." 47 275 430 60 16 $white $false | Out-Null
   Add-Pill $slide "Problem ID 26196" 47 367 116 $softNavy $white
@@ -152,7 +152,7 @@ try {
   Add-Text $slide "Students do not need another generic workout plan." 44 100 660 32 25 $ink $true | Out-Null
   Add-Text $slide "They need fitness that works inside a real campus day." 44 133 600 23 15 $muted $false | Out-Null
   Add-Text $slide "THE FRICTION" 44 184 260 16 10 $pink $true | Out-Null
-  Add-Text $slide "THE FITSAATHI RESPONSE" 500 184 340 16 10 $azure $true | Out-Null
+  Add-Text $slide "THE MOVEUP RESPONSE" 500 184 340 16 10 $azure $true | Out-Null
   Add-FeatureCard $slide "1" "Timetable gaps disappear" "Short free slots are rarely turned into a clear, realistic activity plan." 44 214 398 106 $pink $pinkSoft
   Add-FeatureCard $slide "2" "Unsafe / uncertain conditions" "Heat, rain and air quality make the best time and place hard to judge." 44 337 398 106 $amber $amberSoft
   Add-FeatureCard $slide "3" "Motivation needs people" "Fitness alone loses momentum; typed activity data is difficult to trust." 44 460 398 106 $purple $purpleSoft
@@ -173,7 +173,7 @@ try {
   Add-Text $slide "Student context" 64 237 160 20 15 $ink $true | Out-Null
   Add-Text $slide " Timetable & free slots`n Fitness goal & level`n Preferred activity / duration`n Circle availability`n Weather & AQI`n Campus locations" 64 273 180 122 11 $muted $false | Out-Null
   $center = Add-Box $slide $msoShapeRoundedRectangle 352 215 260 212 $navy; $center.Adjustments.Item(1) = 0.1
-  Add-Text $slide "FitSaathi decision layer" 374 238 215 20 15 $white $true | Out-Null
+  Add-Text $slide "Moveup decision layer" 374 238 215 20 15 $white $true | Out-Null
   Add-Text $slide "Fit Window Engine`nFinds the strongest available slot.`n`nSmart Quest Planner`nSelects a realistic next activity." 374 278 203 110 12 $lightText $false | Out-Null
   $right = Add-Box $slide $msoShapeRoundedRectangle 690 215 226 212 $white $line 0.75; $right.Adjustments.Item(1) = 0.1
   Add-Text $slide "Student action" 711 237 160 20 15 $ink $true | Out-Null
@@ -235,8 +235,8 @@ try {
   Add-FeatureCard $slide "04" "Responsible coordination" "Aggregate-only views give campus coordinators useful signals while protecting personal data." 713 166 203 174 $amber $amberSoft
   $reference = Add-Box $slide $msoShapeRoundedRectangle 44 394 872 126 $white $line 0.75; $reference.Adjustments.Item(1) = 0.08
   Add-Text $slide "PRODUCT & RESEARCH BASIS" 65 417 300 14 10 $azure $true | Out-Null
-  Add-Text $slide " Smart India Hackathon Problem Statement 26196  Student Innovation: ideas to boost fitness activities and assist in keeping fit`n Open-Meteo  weather and air-quality context; OpenStreetMap  campus activity-place discovery`n FitSaathi technical implementation: Next.js, Supabase, MapLibre and PWA architecture" 65 447 790 55 10.5 $muted $false | Out-Null
-  Add-Text $slide "FitSaathi  fitness that fits student life." 44 548 872 18 13 $azure $true $ppAlignCenter "Aptos Display" | Out-Null
+  Add-Text $slide " Smart India Hackathon Problem Statement 26196  Student Innovation: ideas to boost fitness activities and assist in keeping fit`n Open-Meteo  weather and air-quality context; OpenStreetMap  campus activity-place discovery`n Moveup technical implementation: Next.js, Supabase, MapLibre and PWA architecture" 65 447 790 55 10.5 $muted $false | Out-Null
+  Add-Text $slide "Moveup  fitness that fits student life." 44 548 872 18 13 $azure $true $ppAlignCenter "Aptos Display" | Out-Null
 
   $presentation.SaveAs($outputPath, $ppSaveAsOpenXMLPresentation)
   $presentation.SaveAs($pdfPath, $ppSaveAsPDF)

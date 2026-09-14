@@ -5,7 +5,7 @@
 // take effect" PWA bug: bump CACHE below whenever this file changes, so
 // already-installed clients purge their stale cache instead of silently
 // running old code forever.
-const CACHE = "fitsaathi-v4";
+const CACHE = "moveup-v4";
 const OFFLINE_URLS = ["/", "/challenges", "/quest", "/fitroute", "/profile"];
 
 self.addEventListener("install", (event) => {

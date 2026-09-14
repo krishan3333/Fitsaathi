@@ -38,7 +38,7 @@ export function TopBar({ profileId }: { profileId?: string }) {
           <div className="transition-transform duration-300 group-hover:scale-105">
             <BrandMark />
           </div>
-          <span className="display text-[1.15rem] font-bold tracking-tight text-foreground">FitSaathi</span>
+          <span className="display text-[1.15rem] font-bold tracking-tight text-foreground">Moveup</span>
         </Link>
 
         <nav className="hidden items-center gap-1 md:flex">

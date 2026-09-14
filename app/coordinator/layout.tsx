@@ -7,7 +7,7 @@ export default function CoordinatorLayout({ children }: LayoutProps<"/coordinato
       <header className="border-b border-border bg-card">
         <div className="mx-auto flex h-14 max-w-6xl items-center gap-2 px-6 font-semibold">
           <Link href="/coordinator" className="flex items-center gap-2">
-            <LayoutDashboard className="size-5 text-primary" /> FitSaathi Coordinator
+            <LayoutDashboard className="size-5 text-primary" /> Moveup Coordinator
           </Link>
         </div>
       </header>

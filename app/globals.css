@@ -3,7 +3,7 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 /* ============================================================================
-   FitSaathi design tokens.
+   Moveup design tokens.
 
    Colour rule for STATE: green / amber / red are reserved for *conditions*
    (air quality, weather, verification) because the product's core vocabulary

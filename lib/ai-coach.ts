@@ -1,4 +1,4 @@
-// AI-generated chat *replies* for the floating "FitSaathi Buddy" widget —
+// AI-generated chat *replies* for the floating "Moveup Buddy" widget —
 // Google Gemini (free tier), same GEMINI_API_KEY as lib/quest-generator.ts.
 // Unlike the quest planner, this is deliberately a free-form chat surface
 // (tips + video pointers + casual talk), not the rule-based recommendation
@@ -24,7 +24,7 @@ const RESPONSE_SCHEMA = {
   required: ["reply", "videoQueries"],
 } as const;
 
-const SYSTEM_INSTRUCTION = `You are "FitSaathi Buddy", a friendly, upbeat fitness chat assistant inside a
+const SYSTEM_INSTRUCTION = `You are "Moveup Buddy", a friendly, upbeat fitness chat assistant inside a
 college fitness app. You talk to students one-on-one in a small floating chat window.
 
 What you're for:

@@ -1,8 +1,8 @@
-# FitSaathi — features that can actually win SIH 26196
+# Moveup — features that can actually win SIH 26196
 
 ## Context
 
-FitSaathi already implements almost the entire original spec (`1.md`): Fit Circles, 10 challenge types, realtime leaderboards with an Improvement League, a rule-based quest planner (plus Gemini-generated personal quests), FitRoute map with live weather/AQI green window and crowd check-ins, manual/GPS/quest activity logging with anti-cheat weighting, streaks/levels/badges, privacy controls, PWA shell, and an aggregate-only coordinator dashboard.
+Moveup already implements almost the entire original spec (`1.md`): Fit Circles, 10 challenge types, realtime leaderboards with an Improvement League, a rule-based quest planner (plus Gemini-generated personal quests), FitRoute map with live weather/AQI green window and crowd check-ins, manual/GPS/quest activity logging with anti-cheat weighting, streaks/levels/badges, privacy controls, PWA shell, and an aggregate-only coordinator dashboard.
 
 That makes it a *complete* submission but not yet a *distinctive* one. Every SIH fitness team will show challenges, leaderboards, streaks and a map. Judges will ask two questions the current build answers weakly:
 

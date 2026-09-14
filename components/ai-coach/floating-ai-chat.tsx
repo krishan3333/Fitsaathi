@@ -13,7 +13,7 @@ interface ChatMessage {
 
 const GREETING: ChatMessage = {
   role: "model",
-  text: "Hey, I'm your FitSaathi Buddy! Ask me for workout tips, form pointers, or just say hi — I'll point you to a video when it helps.",
+  text: "Hey, I'm your Moveup Buddy! Ask me for workout tips, form pointers, or just say hi — I'll point you to a video when it helps.",
 };
 
 function youtubeSearchUrl(query: string) {
@@ -74,7 +74,7 @@ export function FloatingAiChat() {
                 <Sparkles className="size-4" />
               </span>
               <div>
-                <p className="text-sm font-semibold tracking-[-0.01em]">FitSaathi Buddy</p>
+                <p className="text-sm font-semibold tracking-[-0.01em]">Moveup Buddy</p>
                 <p className="text-[11px] text-muted-foreground">Tips, videos &amp; chat</p>
               </div>
             </div>
@@ -151,7 +151,7 @@ export function FloatingAiChat() {
         type="button"
         onClick={() => setOpen((v) => !v)}
         className="fixed bottom-[5.75rem] right-4 z-40 flex size-14 items-center justify-center rounded-full bg-gradient-to-br from-primary via-primary to-accent-purple text-primary-foreground shadow-float ring-2 ring-white/20 transition-all duration-300 hover:scale-110 active:scale-95 md:bottom-6 group"
-        aria-label={open ? "Close FitSaathi Buddy" : "Open FitSaathi Buddy"}
+        aria-label={open ? "Close Moveup Buddy" : "Open Moveup Buddy"}
       >
         {open ? (
           <X className="size-6 transition-transform group-hover:rotate-90" />

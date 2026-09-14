@@ -135,7 +135,7 @@ export default function OnboardingPage() {
               <Input value={name} onChange={(e) => setName(e.target.value)} placeholder="Your full name" />
             </div>
             <div className="space-y-1.5">
-              <Label>Are you a student, or using FitSaathi personally?</Label>
+              <Label>Are you a student, or using Moveup personally?</Label>
               <div className="flex flex-wrap gap-2">
                 <Chip selected={accountType === "student"} onClick={() => setAccountType("student")}>Student</Chip>
                 <Chip selected={accountType === "personal"} onClick={() => setAccountType("personal")}>Personal / General</Chip>

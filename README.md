@@ -1,9 +1,9 @@
-# FitSaathi
+# Moveup
 
 **Fitness that fits student life.**
 
 A student fitness and sports PWA built for Smart India Hackathon Problem ID 26196.
-FitSaathi motivates students through friends, fits fitness into their timetable,
+Moveup motivates students through friends, fits fitness into their timetable,
 and guides them to the best place and time to stay active — through friend
 challenges with live leaderboards, a rule-based smart quest planner (with
 optional Gemini-generated personal quests layered on top, never in charge of

@@ -1,6 +1,6 @@
-# 🛠️ FitSaathi - Technical Stack Specification
+# 🛠️ Moveup - Technical Stack Specification
 
-This document provides a detailed breakdown of the technologies, libraries, frameworks, and architecture powering the **FitSaathi** project.
+This document provides a detailed breakdown of the technologies, libraries, frameworks, and architecture powering the **Moveup** project.
 
 ---
 

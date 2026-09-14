@@ -1,4 +1,4 @@
-// One-off script: renders the FitSaathi app icon (indigo tile + a bright green
+// One-off script: renders the Moveup app icon (indigo tile + a bright green
 // ring, echoing the dashboard progress ring) straight to PNG bytes with zlib,
 // no image/canvas dependency needed. Run: node scripts/generate-icons.mjs
 import { deflateSync } from "node:zlib";

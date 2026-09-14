@@ -1,4 +1,4 @@
--- Lets non-students use FitSaathi without a college/department, via an
+-- Lets non-students use Moveup without a college/department, via an
 -- account_type toggle. Coordinators always stay college-affiliated since the
 -- coordinator RPCs (0007) and campus_locations scoping (0006) depend on it.
 

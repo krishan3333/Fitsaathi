@@ -1,4 +1,4 @@
--- FitSaathi database schema + RLS
+-- Moveup database schema + RLS
 -- Run against a fresh Supabase project (SQL editor or `supabase db push`).
 
 create extension if not exists pgcrypto;

@@ -75,7 +75,7 @@ function LoginForm() {
         </Card>
 
         <p className="mt-5 text-center text-sm text-muted-foreground">
-          New to FitSaathi?{" "}
+          New to Moveup?{" "}
           <Link href="/signup" className="font-medium text-primary underline-offset-4 hover:underline">
             Create an account
           </Link>

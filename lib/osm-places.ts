@@ -64,7 +64,7 @@ export async function fetchNearbyPlaces(lat: number, lng: number, radiusM = 3000
         // Overpass returns 406 without an explicit Accept header, and its
         // usage policy asks for an identifying User-Agent.
         Accept: "application/json",
-        "User-Agent": "FitSaathi/1.0 (SIH26196 student fitness app)",
+        "User-Agent": "Moveup/1.0 (SIH26196 student fitness app)",
       },
       next: { revalidate: 900 },
     });

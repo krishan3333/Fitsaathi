@@ -1,4 +1,4 @@
--- FitSaathi content seed — the campus content library the app needs to function.
+-- Moveup content seed — the campus content library the app needs to function.
 -- This contains NO fake user accounts: real students sign up through the app,
 -- and their data builds up from their own activity.
 --
