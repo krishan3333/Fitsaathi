@@ -31,15 +31,15 @@ export function BadgesRow({ badges }: { badges: { name: string; icon: string }[]
         {badges.length === 0 ? (
           <EmptyState icon={Award} title="No badges yet" description="Finish quests and challenges to start earning them." />
         ) : (
-          <div className="flex gap-3 overflow-x-auto scrollbar-none">
+          <div className="flex gap-3.5 overflow-x-auto scrollbar-none pb-1 pt-1">
             {badges.map((b, i) => {
               const Icon = ICONS[b.icon] ?? Award;
               return (
-                <div key={b.name} className="flex w-[4.75rem] shrink-0 flex-col items-center gap-2 text-center">
-                  <div className={`flex size-12 items-center justify-center rounded-2xl ring-1 ring-inset ${TILE_TONES[i % TILE_TONES.length]}`}>
-                    <Icon className="size-5" />
+                <div key={b.name} className="group flex w-[5rem] shrink-0 flex-col items-center gap-2 text-center cursor-pointer">
+                  <div className={`flex size-13 items-center justify-center rounded-2xl ring-1 ring-inset shadow-soft transition-all duration-300 group-hover:scale-110 group-hover:shadow-lift ${TILE_TONES[i % TILE_TONES.length]}`}>
+                    <Icon className="size-6 transition-transform group-hover:rotate-6" />
                   </div>
-                  <span className="text-[0.7rem] font-medium leading-tight">{b.name}</span>
+                  <span className="text-[0.72rem] font-semibold leading-tight text-foreground/90 transition-colors group-hover:text-primary">{b.name}</span>
                 </div>
               );
             })}

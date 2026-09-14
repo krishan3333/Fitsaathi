@@ -5,13 +5,21 @@ import { cn } from "@/lib/utils";
  * opt-in (`shadow-lift` on things you can press, `shadow-float` on things
  * that sit above the page) so a shadow always means something. */
 function Card({ className, ...props }: React.ComponentProps<"div">) {
-  return <div className={cn("rounded-[1.375rem] border border-border bg-card text-card-foreground", className)} {...props} />;
+  return (
+    <div
+      className={cn(
+        "rounded-[1.5rem] border border-border bg-card text-card-foreground shadow-soft transition-all duration-300 hover:border-primary/25 hover:shadow-lift",
+        className
+      )}
+      {...props}
+    />
+  );
 }
 function CardHeader({ className, ...props }: React.ComponentProps<"div">) {
   return <div className={cn("flex flex-col gap-1 px-5 pt-5", className)} {...props} />;
 }
 function CardTitle({ className, ...props }: React.ComponentProps<"h3">) {
-  return <h3 className={cn("text-[0.95rem] font-semibold leading-tight tracking-[-0.015em]", className)} {...props} />;
+  return <h3 className={cn("text-[1rem] font-semibold leading-tight tracking-[-0.015em] text-foreground", className)} {...props} />;
 }
 function CardDescription({ className, ...props }: React.ComponentProps<"p">) {
   return <p className={cn("text-sm leading-relaxed text-muted-foreground", className)} {...props} />;

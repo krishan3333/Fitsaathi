@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { TopBar } from "@/components/layout/top-bar";
 import { BottomNav } from "@/components/layout/bottom-nav";
+import { FloatingAiChat } from "@/components/ai-coach/floating-ai-chat";
 
 export default async function AppShellLayout({ children }: LayoutProps<"/">) {
   const supabase = await createClient();
@@ -19,6 +20,7 @@ export default async function AppShellLayout({ children }: LayoutProps<"/">) {
       <TopBar profileId={user.id} />
       <main className="mx-auto w-full max-w-5xl flex-1 px-4 pb-24 pt-4 md:pb-10">{children}</main>
       <BottomNav />
+      <FloatingAiChat />
     </div>
   );
 }

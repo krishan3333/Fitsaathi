@@ -126,26 +126,28 @@ export function FitWindowsCard({
           </div>
         </div>
 
-        <div className="space-y-1.5">
+        <div className="space-y-2">
           {windows.map((w) => {
             const { badge, label, dot } = STATUS_STYLE[w.status];
             const key = `${w.start}-${w.end}`;
             return (
               <div
                 key={key}
-                className={`flex items-center justify-between gap-3 rounded-2xl border px-3.5 py-3 transition-colors ${
-                  key === highlight ? "border-primary bg-primary/5" : "border-transparent bg-muted"
+                className={`flex items-center justify-between gap-3 rounded-2xl border px-4 py-3 transition-all duration-200 ${
+                  key === highlight
+                    ? "border-primary/40 bg-primary/10 shadow-soft"
+                    : "border-border/60 bg-muted/60 hover:bg-muted hover:border-border"
                 }`}
               >
                 <div className="min-w-0">
                   <p className="flex items-center gap-2">
-                    <span className={`size-1.5 shrink-0 rounded-full ${dot}`} aria-hidden="true" />
-                    <span className="metric-sm text-[0.95rem]">
+                    <span className={`size-2 shrink-0 rounded-full ${dot} animate-pulse-soft`} aria-hidden="true" />
+                    <span className="metric-sm text-[1rem] font-bold text-foreground">
                       {formatSlotTime(w.start)} – {formatSlotTime(w.end)}
                     </span>
-                    <span className="shrink-0 text-[0.72rem] text-muted-foreground">{w.minutes} min</span>
+                    <span className="shrink-0 text-[0.75rem] font-medium text-muted-foreground">({w.minutes} min)</span>
                   </p>
-                  <div className="mt-1.5 flex flex-wrap items-center gap-1.5">
+                  <div className="mt-2 flex flex-wrap items-center gap-1.5">
                     <Badge variant={badge}>{label}</Badge>
                     {w.aqi != null && <Badge variant="muted">AQI {w.aqi}</Badge>}
                     {w.friends.length > 0 && (
@@ -157,7 +159,7 @@ export function FitWindowsCard({
                   </div>
                 </div>
                 {!compact && (
-                  <Button asChild size="sm" variant="outline">
+                  <Button asChild size="sm" variant="outline" className="shadow-xs font-semibold hover:scale-105">
                     <Link href={`/quest?window=${w.start}-${w.end}`}>Start</Link>
                   </Button>
                 )}

@@ -44,7 +44,7 @@ export function ProgressRing({ value, max, size = 168, strokeWidth = 10, classNa
           strokeWidth={strokeWidth}
           strokeLinecap="round"
           strokeDasharray={`${arc * pct} ${circumference}`}
-          className={cn("fill-none transition-[stroke-dasharray] duration-700 ease-out", indicatorClassName)}
+          className={cn("fill-none transition-all duration-700 ease-out drop-shadow-sm", indicatorClassName)}
         />
       </svg>
       <div className="absolute inset-0 flex items-center justify-center">{children}</div>

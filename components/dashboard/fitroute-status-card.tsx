@@ -20,20 +20,20 @@ export function FitRouteStatusCard({
   const { icon: Icon, tint, label } = STATUS_MAP[status];
   return (
     <Link href="/fitroute" className="group block">
-      <Card className="transition-[border-color,box-shadow] group-hover:border-foreground/20 group-hover:shadow-lift">
-        <CardContent className="flex items-center gap-3.5 py-4">
-          <span className={cn("flex size-10 shrink-0 items-center justify-center rounded-xl ring-1 ring-inset", tint)}>
-            <Icon className="size-[1.15rem]" />
+      <Card className="transition-all duration-300 group-hover:border-primary/40 group-hover:shadow-lift group-hover:-translate-y-0.5">
+        <CardContent className="flex items-center gap-4 py-4">
+          <span className={cn("flex size-11 shrink-0 items-center justify-center rounded-2xl ring-1 ring-inset shadow-xs transition-transform group-hover:scale-105", tint)}>
+            <Icon className="size-5 animate-pulse-soft" />
           </span>
           <div className="min-w-0 flex-1">
-            <p className="text-sm font-medium tracking-[-0.01em]">{label}</p>
+            <p className="text-[0.92rem] font-bold text-foreground tracking-tight">{label}</p>
             {bestNearby && (
-              <p className="mt-0.5 truncate text-[0.78rem] text-muted-foreground">
-                Nearest route: {bestNearby.name} · <span className="tnum">{bestNearby.distanceKm}</span> km
+              <p className="mt-0.5 truncate text-[0.78rem] font-medium text-muted-foreground">
+                Nearest route: <span className="font-semibold text-foreground">{bestNearby.name}</span> · <span className="tnum">{bestNearby.distanceKm}</span> km
               </p>
             )}
           </div>
-          <ArrowRight className="size-4 shrink-0 text-muted-foreground transition-transform group-hover:translate-x-0.5" />
+          <ArrowRight className="size-4 shrink-0 text-muted-foreground transition-transform duration-200 group-hover:translate-x-1 group-hover:text-primary" />
         </CardContent>
       </Card>
     </Link>

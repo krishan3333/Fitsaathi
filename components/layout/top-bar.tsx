@@ -32,14 +32,16 @@ export function TopBar({ profileId }: { profileId?: string }) {
   }, [profileId]);
 
   return (
-    <header className="sticky top-0 z-30 border-b border-border/70 bg-background/80 backdrop-blur-xl">
-      <div className="mx-auto flex h-16 max-w-5xl items-center justify-between px-4">
-        <Link href="/" className="flex items-center gap-2.5">
-          <BrandMark />
-          <span className="display text-[1.05rem]">FitSaathi</span>
+    <header className="sticky top-0 z-30 border-b border-border/60 bg-card/75 backdrop-blur-xl shadow-soft">
+      <div className="mx-auto flex h-16 max-w-5xl items-center justify-between px-4 sm:px-6">
+        <Link href="/" className="group flex items-center gap-2.5 transition-transform duration-200 active:scale-95">
+          <div className="transition-transform duration-300 group-hover:scale-105">
+            <BrandMark />
+          </div>
+          <span className="display text-[1.15rem] font-bold tracking-tight text-foreground">FitSaathi</span>
         </Link>
 
-        <nav className="hidden items-center gap-0.5 md:flex">
+        <nav className="hidden items-center gap-1 md:flex">
           {ITEMS.map(({ href, label, icon: Icon }) => {
             const active = href === "/" ? pathname === "/" : pathname.startsWith(href);
             return (
@@ -48,11 +50,14 @@ export function TopBar({ profileId }: { profileId?: string }) {
                 href={href}
                 aria-current={active ? "page" : undefined}
                 className={cn(
-                  "flex items-center gap-1.5 rounded-full px-3.5 py-2 text-[13px] font-medium transition-colors",
-                  active ? "bg-primary/10 text-primary" : "text-muted-foreground hover:bg-muted hover:text-foreground"
+                  "flex items-center gap-1.5 rounded-full px-4 py-2 text-[13px] font-medium transition-all duration-200",
+                  active
+                    ? "bg-primary/15 text-primary font-semibold shadow-xs ring-1 ring-primary/25"
+                    : "text-muted-foreground hover:bg-muted/80 hover:text-foreground"
                 )}
               >
-                <Icon className="size-4" /> {label}
+                <Icon className={cn("size-4 transition-transform duration-200", active && "scale-110")} strokeWidth={active ? 2.3 : 1.9} />
+                {label}
               </Link>
             );
           })}
@@ -61,11 +66,14 @@ export function TopBar({ profileId }: { profileId?: string }) {
         <Link
           href="/notifications"
           aria-label={unread > 0 ? `Notifications, ${unread} unread` : "Notifications"}
-          className="relative flex size-10 items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+          className="relative flex size-10 items-center justify-center rounded-full text-muted-foreground ring-1 ring-border/50 transition-all duration-200 hover:bg-muted hover:text-foreground hover:ring-border active:scale-95 shadow-xs"
         >
           <Bell className="size-[1.15rem]" />
           {unread > 0 && (
-            <span className="absolute right-2 top-2 size-2 rounded-full bg-primary ring-2 ring-background" />
+            <span className="absolute right-2 top-2 flex size-2.5">
+              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-primary opacity-75" />
+              <span className="relative inline-flex size-2.5 rounded-full bg-primary ring-2 ring-card" />
+            </span>
           )}
         </Link>
       </div>

@@ -20,28 +20,29 @@ export function NextQuestCard({ quest, time }: { quest: Quest | null; time: stri
   }
 
   return (
-    <Card className="border-transparent bg-primary text-primary-foreground shadow-lift">
-      <CardContent className="py-5">
-        <p className="flex items-center gap-1.5 text-[0.72rem] font-medium text-primary-foreground/75">
-          <Sparkles className="size-3.5" /> Next up for you
+    <Card className="border-none bg-gradient-to-br from-primary via-primary to-accent-purple text-primary-foreground shadow-lift hover:shadow-float transition-all duration-300 relative overflow-hidden">
+      <div className="absolute -right-8 -top-8 size-40 rounded-full bg-white/10 blur-2xl pointer-events-none" />
+      <CardContent className="py-6 relative z-10">
+        <p className="flex items-center gap-1.5 text-[0.75rem] font-bold uppercase tracking-wider text-primary-foreground/85">
+          <Sparkles className="size-4 animate-pulse-soft text-yellow-300" /> Next up for you
         </p>
 
-        <h3 className="mt-2.5 text-[1.3rem] font-semibold leading-snug tracking-[-0.02em]">{quest.title}</h3>
+        <h3 className="mt-3 text-[1.4rem] font-bold leading-tight tracking-tight text-white">{quest.title}</h3>
 
-        <div className="mt-2.5 flex flex-wrap items-center gap-x-4 gap-y-1.5 text-[0.78rem] text-primary-foreground/80">
-          <span className="flex items-center gap-1.5">
+        <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-2 text-[0.8rem] font-medium text-primary-foreground/90">
+          <span className="flex items-center gap-1.5 rounded-full bg-black/15 px-3 py-1 backdrop-blur-md">
             <Clock className="size-3.5" /> {time}
           </span>
-          <span className="flex items-center gap-1.5">
+          <span className="flex items-center gap-1.5 rounded-full bg-black/15 px-3 py-1 backdrop-blur-md">
             <MapPin className="size-3.5" /> {quest.location}
           </span>
-          <span className="rounded-full bg-primary-foreground/15 px-2 py-0.5">{quest.indoor_outdoor}</span>
+          <span className="rounded-full bg-white/20 px-3 py-1 font-semibold capitalize backdrop-blur-md">{quest.indoor_outdoor}</span>
         </div>
 
-        <div className="mt-5 flex gap-2.5">
+        <div className="mt-6 flex flex-wrap sm:flex-nowrap gap-3">
           <Button
             asChild
-            className="flex-1 bg-primary-foreground text-primary shadow-none hover:-translate-y-0 hover:shadow-none hover:brightness-95"
+            className="flex-1 bg-white text-primary font-bold shadow-soft hover:bg-white/95 hover:scale-[1.02] active:scale-95 transition-all"
           >
             <Link href={`/quest?start=${quest.id}`}>Start quest</Link>
           </Button>
@@ -51,7 +52,7 @@ export function NextQuestCard({ quest, time }: { quest: Quest | null; time: stri
             trigger={
               <Button
                 variant="outline"
-                className="flex-1 border-primary-foreground/30 bg-transparent text-primary-foreground hover:border-primary-foreground/50 hover:bg-primary-foreground/10"
+                className="flex-1 border-white/40 bg-white/10 text-white font-semibold hover:bg-white/20 hover:border-white/60 active:scale-95 transition-all backdrop-blur-md"
               >
                 Invite friends
               </Button>

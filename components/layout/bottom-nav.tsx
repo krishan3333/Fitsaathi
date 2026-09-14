@@ -20,7 +20,7 @@ export function BottomNav() {
   const pathname = usePathname();
   return (
     <nav className="fixed inset-x-0 bottom-0 z-40 px-3 pb-[max(0.6rem,env(safe-area-inset-bottom))] md:hidden">
-      <ul className="mx-auto flex max-w-md items-stretch justify-between gap-0.5 rounded-full bg-card/85 p-1.5 shadow-float ring-1 ring-foreground/8 backdrop-blur-xl">
+      <ul className="mx-auto flex max-w-md items-stretch justify-between gap-1 rounded-full bg-card/85 p-1.5 shadow-float ring-1 ring-border/60 backdrop-blur-xl">
         {ITEMS.map(({ href, label, icon: Icon }) => {
           const active = href === "/" ? pathname === "/" : pathname.startsWith(href);
           return (
@@ -29,11 +29,13 @@ export function BottomNav() {
                 href={href}
                 aria-current={active ? "page" : undefined}
                 className={cn(
-                  "flex flex-col items-center gap-1 rounded-full py-2 text-[10.5px] font-medium transition-colors",
-                  active ? "bg-primary/10 text-primary" : "text-muted-foreground"
+                  "flex flex-col items-center gap-1 rounded-full py-2 text-[10.5px] font-medium transition-all duration-200 active:scale-95",
+                  active
+                    ? "bg-primary/15 text-primary font-semibold ring-1 ring-primary/25 shadow-xs"
+                    : "text-muted-foreground hover:text-foreground"
                 )}
               >
-                <Icon className="size-[1.15rem]" strokeWidth={active ? 2.3 : 1.9} />
+                <Icon className={cn("size-[1.15rem] transition-transform duration-200", active && "scale-110")} strokeWidth={active ? 2.3 : 1.9} />
                 {label}
               </Link>
             </li>
