@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Award, Medal, Pencil, TrendingUp } from "lucide-react";
+import { Award, Flag, Medal, Pencil, ShieldCheck, TrendingUp } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import { ErrorState } from "@/components/ui/empty-state";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -86,6 +86,27 @@ export default async function ProfilePage() {
           </Button>
         </CardContent>
       </Card>
+
+      <div className="grid grid-cols-2 gap-3">
+        <Button asChild variant="outline" className="h-auto justify-start gap-3 py-3.5">
+          <Link href="/safety">
+            <ShieldCheck className="text-primary" />
+            <span className="text-left">
+              <span className="block text-sm font-medium">Safety</span>
+              <span className="block text-[0.72rem] text-muted-foreground">Contacts, sessions, SOS</span>
+            </span>
+          </Link>
+        </Button>
+        <Button asChild variant="outline" className="h-auto justify-start gap-3 py-3.5">
+          <Link href="/reports">
+            <Flag className="text-primary" />
+            <span className="text-left">
+              <span className="block text-sm font-medium">My Reports</span>
+              <span className="block text-[0.72rem] text-muted-foreground">Reports &amp; reviews</span>
+            </span>
+          </Link>
+        </Button>
+      </div>
 
       <div className="grid grid-cols-3 gap-3">
         <Card>

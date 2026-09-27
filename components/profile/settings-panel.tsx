@@ -1,10 +1,13 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { ShieldCheck } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Switch } from "@/components/ui/switch";
+import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { getStoredTheme, toggleTheme } from "@/components/layout/theme-script";
 import type { Profile } from "@/lib/supabase/types";
@@ -46,6 +49,28 @@ export function SettingsPanel({ profile }: { profile: Profile }) {
 
   return (
     <>
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-base">Safety</CardTitle>
+        </CardHeader>
+        <CardContent className="divide-y divide-border pt-0">
+          <Row label="Women-Safe Mode" description="Highlights the Safety tab with trusted contacts, live safety sessions and SOS">
+            <Switch defaultChecked={profile.women_safe_mode} disabled={saving === "women_safe_mode"} onCheckedChange={(v) => update("women_safe_mode", v)} />
+          </Row>
+          <div className="flex items-center justify-between gap-4 py-3">
+            <div>
+              <p className="text-sm font-medium">Trusted contacts &amp; SOS</p>
+              <p className="text-xs text-muted-foreground">Available any time, whether or not Women-Safe Mode is on</p>
+            </div>
+            <Button asChild size="sm" variant="outline">
+              <Link href="/safety">
+                <ShieldCheck /> Open
+              </Link>
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
+
       <Card>
         <CardHeader>
           <CardTitle className="text-base">Privacy</CardTitle>

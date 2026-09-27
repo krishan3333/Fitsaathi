@@ -2,12 +2,15 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Droplet, MapPin, ShieldCheck, Users, Check } from "lucide-react";
+import { Droplet, Flag, MapPin, ShieldCheck, Star, Users, Check } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { GpsSessionDialog } from "@/components/fitroute/gps-session-dialog";
+import { ReportIssueDialog } from "@/components/reports/report-issue-dialog";
+import { ReviewDialog } from "@/components/reports/review-dialog";
+import { FacilityReviewsList } from "@/components/reports/facility-reviews-list";
 import { cn } from "@/lib/utils";
 import type { MapSpot } from "@/lib/map-spot";
 import type { CrowdLevel } from "@/lib/supabase/types";
@@ -46,7 +49,22 @@ export function LocationCard({ spot, selected, onSelect }: { spot: MapSpot; sele
             <h3 className="font-semibold tracking-[-0.015em]">{spot.name}</h3>
             <p className="mt-0.5 text-[0.72rem] text-muted-foreground">{detailParts.join(" · ")}</p>
           </div>
-          {isCurated && <Badge variant={spot.isOpen ? "success" : "danger"} className="shrink-0">{spot.isOpen ? "Open" : "Closed"}</Badge>}
+          {isCurated && (
+            <div className="flex shrink-0 flex-col items-end gap-1">
+              <Badge variant={spot.isOpen ? "success" : "danger"}>{spot.isOpen ? "Open" : "Closed"}</Badge>
+              {spot.avgRating != null && (
+                <FacilityReviewsList
+                  locationId={spot.id}
+                  locationName={spot.name}
+                  trigger={
+                    <button className="flex items-center gap-1 text-[0.72rem] text-muted-foreground hover:text-foreground" onClick={(e) => e.stopPropagation()}>
+                      <Star className="size-3 fill-warning text-warning" /> {spot.avgRating.toFixed(1)} ({spot.reviewCount})
+                    </button>
+                  }
+                />
+              )}
+            </div>
+          )}
         </div>
 
         <div className="mt-3 flex flex-wrap items-center gap-1.5">
@@ -85,6 +103,27 @@ export function LocationCard({ spot, selected, onSelect }: { spot: MapSpot; sele
                     ))}
                   </div>
                 )}
+              </div>
+            )}
+
+            {isCurated && (
+              <div className="flex gap-2">
+                <ReviewDialog
+                  presetFacility={{ id: spot.id, name: spot.name }}
+                  trigger={
+                    <Button size="sm" variant="outline" className="flex-1">
+                      <Star /> Rate &amp; review
+                    </Button>
+                  }
+                />
+                <ReportIssueDialog
+                  presetFacility={{ id: spot.id, name: spot.name }}
+                  trigger={
+                    <Button size="sm" variant="outline" className="flex-1">
+                      <Flag /> Report issue
+                    </Button>
+                  }
+                />
               </div>
             )}
           </div>

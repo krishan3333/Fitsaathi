@@ -10,11 +10,19 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { useLiveLocation } from "@/lib/use-live-location";
 import { fromCampusLocation, fromOsmPlace, sortByDistance, type MapSpot } from "@/lib/map-spot";
 import type { OsmPlace } from "@/lib/osm-places";
-import type { CampusLocation } from "@/lib/supabase/types";
+import type { CampusLocation, FacilityRating } from "@/lib/supabase/types";
 
 type PlacesState = { status: "idle" | "loading" | "ready" | "error"; places: OsmPlace[] };
 
-export function FitRouteExplorer({ curatedLocations, college }: { curatedLocations: CampusLocation[]; college: string | null }) {
+export function FitRouteExplorer({
+  curatedLocations,
+  college,
+  ratings = {},
+}: {
+  curatedLocations: CampusLocation[];
+  college: string | null;
+  ratings?: Record<string, Pick<FacilityRating, "avg_rating" | "review_count">>;
+}) {
   const location = useLiveLocation();
   const [places, setPlaces] = useState<PlacesState>({ status: "idle", places: [] });
   const [selectedId, setSelectedId] = useState<string | null>(null);
@@ -38,11 +46,14 @@ export function FitRouteExplorer({ curatedLocations, college }: { curatedLocatio
   const liveCoords = location.status === "ready" ? location.coords : undefined;
 
   const spots: MapSpot[] = useMemo(() => {
-    const curated = curatedLocations.map((loc) => fromCampusLocation(loc, liveCoords));
+    const curated = curatedLocations.map((loc) => {
+      const r = ratings[loc.id];
+      return fromCampusLocation(loc, liveCoords, r ? { avgRating: Number(r.avg_rating), reviewCount: r.review_count } : undefined);
+    });
     const osm = places.places.map((p) => fromOsmPlace(p, liveCoords));
     return sortByDistance([...curated, ...osm]);
     // eslint-disable-next-line react-hooks/exhaustive-deps -- liveCoords is a fresh object each render; its fields are what matter
-  }, [curatedLocations, places.places, liveCoords?.lat, liveCoords?.lng]);
+  }, [curatedLocations, places.places, liveCoords?.lat, liveCoords?.lng, ratings]);
 
   const activeId = selectedId ?? spots[0]?.id ?? null;
   const stillSearching = location.status === "loading" || (location.status === "ready" && places.status === "loading");

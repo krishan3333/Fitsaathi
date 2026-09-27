@@ -2,7 +2,7 @@
 
 import { useEffect } from "react";
 import Link from "next/link";
-import { Flame, MessageCircle, CloudRain, Sparkles, Trophy, Bell, Users } from "lucide-react";
+import { Flame, MessageCircle, CloudRain, Sparkles, Trophy, Bell, Users, ShieldAlert } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { Card, CardContent } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
@@ -17,6 +17,7 @@ const ICONS: Record<string, React.ComponentType<{ className?: string }>> = {
   invite: Bell,
   reaction: MessageCircle,
   squad: Users,
+  sos: ShieldAlert,
 };
 
 function timeAgo(iso: string) {

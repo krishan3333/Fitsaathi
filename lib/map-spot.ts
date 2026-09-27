@@ -19,13 +19,15 @@ export type MapSpot = {
   safetyRating?: SafetyRating; // curated-only
   hasWater?: boolean; // curated-only
   isOpen?: boolean; // curated-only
+  avgRating?: number; // curated-only, from the facility_ratings view
+  reviewCount?: number; // curated-only
 };
 
 function liveDistance(lat: number, lng: number, live?: { lat: number; lng: number }) {
   return live ? haversineKm(live, { lat, lng }) : undefined;
 }
 
-export function fromCampusLocation(loc: CampusLocation, live?: { lat: number; lng: number }): MapSpot {
+export function fromCampusLocation(loc: CampusLocation, live?: { lat: number; lng: number }, rating?: { avgRating: number; reviewCount: number }): MapSpot {
   return {
     id: loc.id,
     name: loc.name,
@@ -40,6 +42,8 @@ export function fromCampusLocation(loc: CampusLocation, live?: { lat: number; ln
     safetyRating: loc.safety_rating,
     hasWater: loc.has_water,
     isOpen: loc.is_open,
+    avgRating: rating?.avgRating,
+    reviewCount: rating?.reviewCount,
   };
 }
 

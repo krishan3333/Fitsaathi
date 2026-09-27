@@ -38,6 +38,7 @@ export type Profile = {
   hide_location: boolean;
   use_nickname: boolean;
   notifications_enabled: boolean;
+  women_safe_mode: boolean;
   current_streak: number;
   longest_streak: number;
   level: StudentLevel;
@@ -220,6 +221,73 @@ export type SquadParticipant = {
   activity_id: string | null;
 }
 
+export type SafetySessionStatus = "active" | "ended" | "sos";
+
+export type TrustedContact = {
+  id: string;
+  profile_id: string;
+  name: string;
+  phone: string;
+  relationship: string | null;
+  created_at: string;
+}
+
+export type SafetySession = {
+  id: string;
+  profile_id: string;
+  status: SafetySessionStatus;
+  share_location: boolean;
+  last_lat: number | null;
+  last_lng: number | null;
+  last_location_at: string | null;
+  started_at: string;
+  ended_at: string | null;
+  sos_at: string | null;
+}
+
+export type ComplaintTargetType = "facility" | "coach" | "event";
+export type ComplaintCategory = "safety" | "harassment" | "cleanliness" | "equipment" | "staff_behavior" | "other";
+export type ComplaintStatus = "open" | "in_review" | "resolved" | "rejected";
+
+export type Complaint = {
+  id: string;
+  profile_id: string;
+  target_type: ComplaintTargetType;
+  target_location_id: string | null;
+  target_label: string;
+  category: ComplaintCategory;
+  description: string;
+  status: ComplaintStatus;
+  admin_notes: string | null;
+  resolved_by: string | null;
+  resolved_at: string | null;
+  created_at: string;
+}
+
+export type ReviewTargetType = "facility" | "coach";
+export type ModerationStatus = "visible" | "hidden";
+
+export type Review = {
+  id: string;
+  profile_id: string;
+  target_type: ReviewTargetType;
+  target_location_id: string | null;
+  target_label: string;
+  rating: number;
+  body: string;
+  moderation_status: ModerationStatus;
+  moderation_reason: string | null;
+  moderated_by: string | null;
+  moderated_at: string | null;
+  created_at: string;
+}
+
+export type FacilityRating = {
+  location_id: string;
+  avg_rating: number;
+  review_count: number;
+}
+
 /** Columns other students are allowed to see (see migration 0005). */
 export type PublicProfile = Pick<
   Profile,
@@ -248,9 +316,14 @@ export type Database = {
       nudge_log: Table<NudgeLog, Partial<NudgeLog> & { profile_id: string; dedupe_key: string }>;
       squad_sessions: Table<SquadSession, Partial<SquadSession>>;
       squad_participants: Table<SquadParticipant, Partial<SquadParticipant> & { session_id: string; profile_id: string }>;
+      trusted_contacts: Table<TrustedContact, Partial<TrustedContact> & { profile_id: string; name: string; phone: string }>;
+      safety_sessions: Table<SafetySession, Partial<SafetySession> & { profile_id: string }>;
+      complaints: Table<Complaint, Partial<Complaint> & { profile_id: string; target_type: ComplaintTargetType; target_label: string; category: ComplaintCategory; description: string }>;
+      reviews: Table<Review, Partial<Review> & { profile_id: string; target_type: ReviewTargetType; target_label: string; rating: number }>;
     };
     Views: {
       public_profiles: { Row: PublicProfile; Relationships: [] };
+      facility_ratings: { Row: FacilityRating; Relationships: [] };
     };
     Functions: {
       friends_available_now: {
@@ -321,6 +394,14 @@ export type Database = {
           steps: number;
           active_minutes: number;
         }[];
+      };
+      trigger_sos: {
+        Args: { p_session_id: string; p_lat?: number | null; p_lng?: number | null };
+        Returns: void;
+      };
+      moderate_review: {
+        Args: { p_review_id: string; p_hide: boolean; p_reason?: string | null };
+        Returns: void;
       };
     };
   };

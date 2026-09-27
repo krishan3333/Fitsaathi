@@ -6,16 +6,16 @@ import { FitRouteExplorer } from "@/components/fitroute/fitroute-explorer";
 async function loadFitRoute(supabase: Awaited<ReturnType<typeof createClient>>, userId: string) {
   const { data: profile, error: profileError } = await supabase.from("profiles").select("college").eq("id", userId).single();
   if (profileError) throw profileError;
-  if (!profile.college) return { locations: [], college: null };
+  if (!profile.college) return { locations: [], college: null, ratings: {} };
 
-  const { data: locations, error } = await supabase
-    .from("campus_locations")
-    .select("*")
-    .eq("college", profile.college)
-    .order("distance_km", { ascending: true });
+  const [{ data: locations, error }, { data: ratingRows }] = await Promise.all([
+    supabase.from("campus_locations").select("*").eq("college", profile.college).order("distance_km", { ascending: true }),
+    supabase.from("facility_ratings").select("*"),
+  ]);
   if (error) throw error;
 
-  return { locations: locations ?? [], college: profile.college };
+  const ratings = Object.fromEntries((ratingRows ?? []).map((r) => [r.location_id, r]));
+  return { locations: locations ?? [], college: profile.college, ratings };
 }
 
 export default async function FitRoutePage() {
@@ -31,7 +31,7 @@ export default async function FitRoutePage() {
   } catch (error) {
     return <ErrorState message={error instanceof Error ? error.message : "Couldn't load FitRoute."} />;
   }
-  const { locations, college } = data;
+  const { locations, college, ratings } = data;
 
   return (
     <div className="space-y-5 pb-4">
@@ -44,7 +44,7 @@ export default async function FitRoutePage() {
 
       <LiveWeatherCard />
 
-      <FitRouteExplorer curatedLocations={locations} college={college} />
+      <FitRouteExplorer curatedLocations={locations} college={college} ratings={ratings} />
     </div>
   );
 }
