@@ -47,7 +47,7 @@ function LoginForm() {
   return (
     <div className="flex min-h-screen flex-col items-center justify-center px-4 py-12">
       <div className="w-full max-w-sm">
-        <BrandMark className="size-11 rounded-2xl" />
+        <BrandMark className="h-16" />
         <h1 className="display mt-5 text-[1.85rem] leading-[1.1]">Welcome back</h1>
         <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
           Your timetable, the weather, and your friends — lined up into the moments worth moving in.

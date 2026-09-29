@@ -34,11 +34,10 @@ export function TopBar({ profileId }: { profileId?: string }) {
   return (
     <header className="sticky top-0 z-30 border-b border-border/60 bg-card/75 backdrop-blur-xl shadow-soft">
       <div className="mx-auto flex h-16 max-w-5xl items-center justify-between px-4 sm:px-6">
-        <Link href="/" className="group flex items-center gap-2.5 transition-transform duration-200 active:scale-95">
+        <Link href="/" className="group flex min-w-0 shrink items-center overflow-hidden transition-transform duration-200 active:scale-95">
           <div className="transition-transform duration-300 group-hover:scale-105">
-            <BrandMark />
+            <BrandMark className="h-12" />
           </div>
-          <span className="display text-[1.15rem] font-bold tracking-tight text-foreground">Moveup</span>
         </Link>
 
         <nav className="hidden items-center gap-1 md:flex">
