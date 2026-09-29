@@ -1,5 +1,6 @@
 import { ShieldCheck } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
+import { getAuthUser } from "@/lib/supabase/auth";
 import { ErrorState } from "@/components/ui/empty-state";
 import { TrustedContactsManager } from "@/components/safety/trusted-contacts-manager";
 import { StartSafetySessionCard } from "@/components/safety/start-safety-session-card";
@@ -20,9 +21,7 @@ async function loadSafety(supabase: Awaited<ReturnType<typeof createClient>>, us
 
 export default async function SafetyPage() {
   const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await getAuthUser();
   if (!user) return null;
 
   let data: Awaited<ReturnType<typeof loadSafety>>;

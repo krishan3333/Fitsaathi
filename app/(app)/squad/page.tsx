@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Users, ArrowRight, LogIn, Play } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
+import { getAuthUser } from "@/lib/supabase/auth";
 import { ErrorState, EmptyState } from "@/components/ui/empty-state";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -34,9 +35,7 @@ const STATUS_LABEL: Record<string, string> = { pending: "Lobby", live: "Live", e
 
 export default async function SquadHubPage() {
   const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await getAuthUser();
   if (!user) return null;
 
   let sessions: SessionRow[];

@@ -1,4 +1,5 @@
 import { createClient } from "@/lib/supabase/server";
+import { getAuthUser } from "@/lib/supabase/auth";
 import { buildQuestContext } from "@/lib/quest-context";
 import { recommendQuests } from "@/lib/quest-engine";
 import { ErrorState, EmptyState } from "@/components/ui/empty-state";
@@ -19,9 +20,7 @@ async function loadQuests(supabase: Awaited<ReturnType<typeof createClient>>, us
 export default async function QuestPage({ searchParams }: PageProps<"/quest">) {
   const { start, window: windowParam } = await searchParams;
   const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await getAuthUser();
   if (!user) return null;
 
   let data: Awaited<ReturnType<typeof loadQuests>>;

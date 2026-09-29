@@ -1,4 +1,5 @@
 import { createClient } from "@/lib/supabase/server";
+import { getAuthUser } from "@/lib/supabase/auth";
 import { ErrorState, EmptyState } from "@/components/ui/empty-state";
 import { Users } from "lucide-react";
 import { CircleCard } from "@/components/challenges/circle-card";
@@ -59,9 +60,7 @@ async function loadChallenges(supabase: Awaited<ReturnType<typeof createClient>>
 export default async function ChallengesPage({ searchParams }: PageProps<"/challenges">) {
   const { create } = await searchParams;
   const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await getAuthUser();
   if (!user) return null;
 
   let data: Awaited<ReturnType<typeof loadChallenges>>;

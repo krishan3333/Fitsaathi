@@ -1,14 +1,13 @@
 import { Bell } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
+import { getAuthUser } from "@/lib/supabase/auth";
 import { ErrorState, EmptyState } from "@/components/ui/empty-state";
 import { NotificationList } from "@/components/notifications/notification-list";
 import type { Notification } from "@/lib/supabase/types";
 
 export default async function NotificationsPage() {
   const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await getAuthUser();
   if (!user) return null;
 
   let notifications: Notification[];

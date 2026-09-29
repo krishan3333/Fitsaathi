@@ -1,5 +1,6 @@
 import { Building2 } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
+import { getAuthUser } from "@/lib/supabase/auth";
 import { ErrorState, EmptyState } from "@/components/ui/empty-state";
 import { ReviewsModerationList, type ReviewRow } from "@/components/coordinator/reviews-moderation-list";
 
@@ -21,9 +22,7 @@ async function loadReviews(supabase: Awaited<ReturnType<typeof createClient>>, u
 
 export default async function CoordinatorReviewsPage() {
   const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await getAuthUser();
   if (!user) return null;
 
   let data: Awaited<ReturnType<typeof loadReviews>>;

@@ -25,7 +25,10 @@ export async function proxy(request: NextRequest) {
     },
   });
 
-  const { data: { user } } = await supabase.auth.getUser();
+  // getClaims verifies the JWT locally (and refreshes it if expired) — no
+  // network round trip to Supabase Auth on every navigation like getUser().
+  const { data } = await supabase.auth.getClaims();
+  const user = data?.claims ?? null;
   const { pathname } = request.nextUrl;
   const isPublic = PUBLIC_PATHS.some((p) => pathname.startsWith(p));
 

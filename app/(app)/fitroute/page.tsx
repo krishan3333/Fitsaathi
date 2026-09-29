@@ -1,4 +1,5 @@
 import { createClient } from "@/lib/supabase/server";
+import { getAuthUser } from "@/lib/supabase/auth";
 import { ErrorState } from "@/components/ui/empty-state";
 import { LiveWeatherCard } from "@/components/fitroute/live-weather-card";
 import { FitRouteExplorer } from "@/components/fitroute/fitroute-explorer";
@@ -20,9 +21,7 @@ async function loadFitRoute(supabase: Awaited<ReturnType<typeof createClient>>, 
 
 export default async function FitRoutePage() {
   const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await getAuthUser();
   if (!user) return null;
 
   let data: Awaited<ReturnType<typeof loadFitRoute>>;

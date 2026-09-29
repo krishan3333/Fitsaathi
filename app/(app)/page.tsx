@@ -1,4 +1,5 @@
 import { createClient } from "@/lib/supabase/server";
+import { getAuthUser } from "@/lib/supabase/auth";
 import { buildQuestContext, formatSlotTime } from "@/lib/quest-context";
 import { recommendQuests } from "@/lib/quest-engine";
 import { groupByDay, activeDaysCount } from "@/lib/activity-stats";
@@ -18,9 +19,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 export default async function DashboardPage() {
   const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await getAuthUser();
   if (!user) return null; // layout already redirects; satisfies TS
 
   let data: Awaited<ReturnType<typeof loadDashboard>>;

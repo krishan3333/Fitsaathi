@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { getAuthUser } from "@/lib/supabase/auth";
 import { ErrorState } from "@/components/ui/empty-state";
 import { SquadLiveBoard } from "@/components/squad/squad-live-board";
 import type { RosterMember } from "@/components/squad/squad-roster";
@@ -46,9 +47,7 @@ async function loadSession(supabase: Awaited<ReturnType<typeof createClient>>, s
 export default async function SquadSessionPage({ params }: PageProps<"/squad/[id]">) {
   const { id } = await params;
   const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await getAuthUser();
   if (!user) return null;
 
   let data: Awaited<ReturnType<typeof loadSession>>;

@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Award, Flag, Medal, Pencil, ShieldCheck, TrendingUp } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
+import { getAuthUser } from "@/lib/supabase/auth";
 import { ErrorState } from "@/components/ui/empty-state";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -49,9 +50,7 @@ async function loadProfile(supabase: Awaited<ReturnType<typeof createClient>>, u
 
 export default async function ProfilePage() {
   const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await getAuthUser();
   if (!user) return null;
 
   let data: Awaited<ReturnType<typeof loadProfile>>;
